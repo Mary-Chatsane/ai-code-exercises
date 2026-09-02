@@ -1,0 +1,27 @@
+CODEBASE EXPLORATION CHALLENGE
+
+Exercise Part 1: Understanding a Specific Feature - completed in the code_understanding_journal
+
+Exercise Part 2: Deepen Understanding Through Guided Questions
+In this part, I used "Prompt 2: Deepen understanding of a codebase" prompt to explore the task prioritization system on
+cil.py, model.py, storage.py and task_manager.py
+
+My initial understanding vs. what I discovered
+- As i was exploring the above functions, my uderstanding was that all the functions are a breakdown of the taskbar managament system
+what i did not know was that, the cil.py, model.py, storage.py and task_manager.py split responsibilities across layers, as a result; acting as
+cli.py - data model, model.py -persistence, storagepy - business logic, and task_manager.py - user interface. 
+
+models.py → data model. Defines what a Task is (its properties: title, status, priority, tags, dates) and the basic things a single task can do to itself 
+(like mark_as_done()). No file reading, no user input — just the shape and behavior of one task object.
+storage.py → persistence. Handles getting tasks into and out of a file (tasks.json) — reading, writing, encoding Python objects to JSON and decoding them back.
+It doesn't care about why you're saving a task, just how.
+task_manager.py → business logic. This is the middle layer — it takes raw input (like a due-date string or a priority number), validates/converts it, 
+and decides how the storage layer should be used. It's the one place that knows both "what a task needs" and "how to store it."
+cli.py → user interface. Handles talking to the actual human — parsing command-line arguments, formatting output nicely, deciding
+what to print when something succeeds or fails.
+
+A useful way to think about it: data flows in one direction when you run a command, and each layer only talks to its neighbor.
+
+The key insights the guided questions helped you uncover
+
+Any misconceptions you had that were clarified
