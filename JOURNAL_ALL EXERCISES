@@ -23,5 +23,8 @@ what to print when something succeeds or fails.
 A useful way to think about it: data flows in one direction when you run a command, and each layer only talks to its neighbor.
 
 The key insights the guided questions helped you uncover
+- the prompt 'prompt 2' resulted in AI asking relevant quesntions and giving insights that helped me to learn how the code work, and how AI
+responds to direct prompts. it revealed information that was unknown to me, and corrected my understanding on how codes work from
+how i filled in the prompt.
 
 Any misconceptions you had that were clarified
