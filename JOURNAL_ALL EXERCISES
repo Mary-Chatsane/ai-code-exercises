@@ -28,3 +28,27 @@ responds to direct prompts. it revealed information that was unknown to me, and 
 how i filled in the prompt.
 
 Any misconceptions you had that were clarified
+
+
+
+Using AI to comprehend existing codebases
+Exercise: Algorithm Deconstruction Challenge
+
+Reflection Questions
+How did the AI’s explanation change your understanding of the algorithm?
+_ it made sense to my confusions and added debth to the algorithm prompt.
+
+What aspects were still difficult to understand after AI explanation?
+- the task calculation with python, and how priority levels do mean urgent is automatically mean "highest than the other levels when calculated
+
+How would you explain this algorithm to another junior developer?
+-The code assigns each task a numerical priority score. It starts with a weighted score based on the task's priority level, then adjusts that 
+score according to how soon the task is due, 
+whether it is completed or under review, whether it has important tags, and whether it was recently updated. Once every task has a score, 
+the tasks are sorted from highest to lowest score, and the top N tasks can be returned.
+
+Did you test this understanding against AI?
+
+How might you improve the algorithm based on your understanding?
+
+
