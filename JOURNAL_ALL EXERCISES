@@ -1,7 +1,3 @@
-CODEBASE EXPLORATION CHALLENGE
-
-Exercise Part 1: Understanding a Specific Feature - completed in the code_understanding_journal
-
 Exercise Part 2: Deepen Understanding Through Guided Questions
 In this part, I used "Prompt 2: Deepen understanding of a codebase" prompt to explore the task prioritization system on
 cil.py, model.py, storage.py and task_manager.py
