@@ -186,26 +186,3 @@ Reject empty titles. create_task() should print an error and return None if titl
 Make updated_at consistent across both status-update branches. Regardless of whether DONE or the generic else branch handles the update, Task.updated_at should end up refreshed in both cases. Tests understanding of the asymmetry between the two branches.
 Add a new status, e.g. BLOCKED. Should be settable via python cli.py status <id> blocked and appear correctly in get_statistics()'s "by status" breakdown without breaking anything else. Tests understanding of how the enum, the CLI's choices=[...] list, and the statistics counter all need to stay in sync.
 
-## Tests (`tests/`)
-
-**Purpose:** *(fill in once reviewed)*
-
-**What's being tested:**
--
-
----
-
-## Glossary (terms I looked up)
-
-| Term | Definition |
-|---|---|
-| Fork | A personal copy of someone else's repository under your own GitHub account |
-| Commit | A saved snapshot of changes, with a message describing what changed |
-| Branch | A separate timeline/version of the project (default branch is usually `main`) |
-| Repository (repo) | A project's folder plus its full history, tracked by Git |
-
----
-
-## General Takeaways / Reflections
-
-*(Write freeform thoughts here as you go — things that surprised you, patterns you're starting to notice across files, etc.)*
