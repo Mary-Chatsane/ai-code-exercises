@@ -1,4 +1,4 @@
-# Code Understanding Journal - EXERCISE: CODEBASE EXPLORATION CHALLENGE
+# Code Understanding Journal - Exercise: Codebase Exploration Challenge
 
 A running log of my findings as I learn how the Task Management System is built.
 
@@ -7,12 +7,12 @@ Exercise Part 1: Understanding a Specific Feature
 
 ## Project Overview
 
-- **What it is:** (e.g., a command-line to-do/task manager written in Python)
-- **How you interact with it:** (e.g., via `python cli.py <command>`)
+- **What it is:** a command-line to-do/task manager written in Python
+- **How you interact with it:** via `python cli.py <command>`
 - **Key files identified so far:**
   - `cli.py` — handles command-line input and dispatches to the logic
-  - `task_manager.py` — (not yet reviewed) likely contains the `TaskManager` class with the actual task logic
-  - `models.py` — (not yet reviewed) likely defines `TaskStatus`, `TaskPriority`, and probably a `Task` class/data structure
+  - `task_manager.py` — contains the `TaskManager` class with the actual task logic
+  - `models.py` — defines `TaskStatus`, `TaskPriority`, and probably a `Task` class/data structure
   - `tests/` — unit tests for the project
 
 ---
@@ -37,11 +37,6 @@ Exercise Part 1: Understanding a Specific Feature
 **Notable observations:**
 - The README describes commands like `update-status`, `update-priority`, `add-tag` — but the actual code uses `status`, `priority`, `tag`, `untag`. **README may be outdated.**
 - `cli.py` contains no actual task-storage logic — it only translates commands into calls on `TaskManager`. Logic and interface are separated (good design practice).
-
-**Open questions:**
-- Where/how does `TaskManager` store tasks? (in memory? a file? a database?)
-- What does a `Task` object actually look like (its attributes)?
-
 ---
 
 ## File: `task_manager.py`
@@ -60,13 +55,6 @@ Delegation to self.storage	TaskManager never touches files directly — it calls
 update_task_status() has a special case: setting status to DONE goes through task.mark_as_done() (which also stamps completed_at), while any other status goes through a generic storage.update_task(task_id, status=...). Two different code paths for what looks like "the same kind of action."
 get_statistics() builds counts by looping over all tasks in memory (self.storage.get_all_tasks()) rather than asking storage to do the counting — logic lives in the manager layer, not the storage layer.
 
-**Open questions:**
--
-What does storage.py / TaskStorage actually do? (confirmed dependency, not yet reviewed)
-Is tasks.json created automatically if it doesn't exist yet?
-Does storage.update_task() call Task.update() internally? (strongly suspected, not confirmed)
----
-
 ## File: `models.py`
 
 **Purpose:** *Purpose: Defines the core data: the Task class itself, plus the TaskPriority and TaskStatus enums.*
@@ -84,10 +72,6 @@ mark_as_done() bundles two changes together (status + completed_at) into one met
 is_overdue() returns False if there's no due date, and also False if the task is already DONE — even if the due date has passed. So "overdue" specifically means "not done and past due," not just "past due."
 update() has no validation — it will happily overwrite any attribute that exists on the object, including id or created_at, if called carelessly.
 
-**Open questions:**
--
-Is there any validation preventing something like an empty title?
-Are priority and status ever compared/sorted anywhere (e.g., is URGENT > HIGH used logically)?
 ---
 
 Feature Deep-Dive: Task Creation & Status Updates
@@ -97,24 +81,24 @@ TaskManager.create_task() / TaskManager.update_task_status() — business logic
 Task (constructor and mark_as_done()) — the data + a couple of self-contained rules
 TaskStorage (in storage.py, not yet reviewed) — persistence, assumed to read/write tasks.json
 
-Execution flow — creating a task
+**Execution flow — creating a task**
 python cli.py create "Title" -p 3 -u "2024-02-01" → cli.py parses args → calls TaskManager.create_task(...)
 create_task() converts the raw int priority into a TaskPriority enum, and parses the due-date string into a real datetime (invalid format → prints error, returns None, nothing is created)
 A new Task(...) is constructed — this generates a UUID, forces status = TODO, and stamps created_at/updated_at
 create_task() passes the Task to storage.add_task(task), which is expected to persist it and return the new ID
 cli.py prints the returned ID
 
-Execution flow — updating status
+**Execution flow — updating status**
 python cli.py status <id> done → TaskManager.update_task_status(task_id, "done")
 String converted to TaskStatus.DONE
 Special case for DONE: fetch the Task object → call task.mark_as_done() (sets status + completed_at) → explicitly call storage.save()
 Any other status: skip the above, call storage.update_task(task_id, status=new_status) directly — a generic path
 
-How data is stored/retrieved
+**How data is stored/retrieved**
 Not fully confirmed yet (need storage.py), but inferred: JSON file (tasks.json by default), accessed only through TaskStorage methods (add_task, get_task, get_all_tasks, update_task, delete_task, save, etc.)
 TaskManager never reads/writes files directly — always goes through TaskStorage
 
-Design patterns spotted
+**Design patterns spotted**
 Layered architecture: CLI → Manager (logic) → Model (data) → Storage (persistence); each layer only talks to the one below it
 Repository pattern (likely): storage details isolated in one file, so swapping JSON for a database later wouldn't require touching task_manager.py or cli.py
 Enums for controlled vocabulary: prevents invalid priority/status values from ever existing
