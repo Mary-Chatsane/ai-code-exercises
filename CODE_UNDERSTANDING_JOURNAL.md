@@ -1,7 +1,8 @@
-# Code Understanding Journal
+# Code Understanding Journal - EXERCISE: CODEBASE EXPLORATION CHALLENGE
 
 A running log of my findings as I learn how the Task Management System is built.
 
+Exercise Part 1: Understanding a Specific Feature
 ---
 
 ## Project Overview
