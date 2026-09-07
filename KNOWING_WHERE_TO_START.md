@@ -1,6 +1,6 @@
 # Knowing Where to Start
 
-# Exercise part 1-4
+# Exercise part 1-4 (python)
 
 ---
 
