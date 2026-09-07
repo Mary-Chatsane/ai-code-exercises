@@ -170,3 +170,19 @@ Reject empty titles. create_task() should print an error and return None if titl
 Make updated_at consistent across both status-update branches. Regardless of whether DONE or the generic else branch handles the update, Task.updated_at should end up refreshed in both cases. Tests understanding of the asymmetry between the two branches.
 Add a new status, e.g. BLOCKED. Should be settable via python cli.py status <id> blocked and appear correctly in get_statistics()'s "by status" breakdown without breaking anything else. Tests understanding of how the enum, the CLI's choices=[...] list, and the statistics counter all need to stay in sync.
 
+**Exercise Part 2: Deepen Understanding Through Guided Questions**
+
+In this part, I used *"Prompt 2: Deepen understanding of a codebase"* which helped me understand the creation of task management through the
+command-line applications. I understood that the system allows users to create tasks with information such as title, description, priority, due 
+date, and tags. Users can make lists, updates, and view tasks. They can also manage their tags and view statistics. 
+
+*My initial understanding vs. what I discovered*
+- As I was exploring how the code works, my understanding was that all the files that get involved in task creation are a breakdown of the task management system, for example; cil.py, model.py, storage.py etc. What I did not know was that, although files like cil.py, model.py, storage.py and task_manager.py are all files that have their own function in a creation of a task, the files split responsibilities across layers. As a result; acting as cli.py - data model, model.py -persistence, storage.py - business logic, and task_manager.py - user interface. However, for this code in particular, cli.py was the only file involved in the README, and not all of them. So what I discovered that, for this exercise, the main focus was the README document. in which, its aim was to tell me what the project is about, how to install or run it, and what commands are available.  So cli.py as the only file involved, it is the entry point in which data flows in one direction when you run a command, by interpreting and receiving the command, then calls another part of the program. The focus of this exercise was on task priorities, and I learnt that the task management systems aligns each task one of four priority levels (priority 1-4), with priority 2 representing MEDIUM and priority 3 representing HIGH. The priority can be specified when creating a task using *--priority.* and can also be used to filter tasks when listing them.  
+
+*The key insights the guided questions helped you uncover*
+- the prompt 'prompt 2' resulted in AI asking relevant questions and giving insights that helped me to learn how the code work, and how AI
+responds to direct prompt after I had attempted to fill it according to my understanding. it revealed information that was unknown to me, and corrected my understanding on how codes work from how I filled in the prompt. The aim of prompt 2 was to deepen my understanding of code base, and that is what I got out of it.
+
+*Any misconceptions you had that were clarified*
+- The misconception was basically own how files interactions work with each other. I only understood as I asked and answered questions that AI asked me, and that the README that I worked with in this exercise was not part of the program executions. The point was for me to understand how task commands that have to do with low to high priorities are made. So that was a highlight for me, because to understand how code works, I needed to understand the base of it, and how commands in task creation are made.
+
