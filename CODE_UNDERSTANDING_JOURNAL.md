@@ -1,79 +1,11 @@
 # Code Understanding Journal - Exercise: Codebase Exploration Challenge
 
 A running log of my findings as I learn how the Task Management System is built.
-
-Exercise Part 1: Understanding a Specific Feature
 ---
-
-## Project Overview
-
-- **What it is:** a command-line to-do/task manager written in Python
-- **How you interact with it:** via `python cli.py <command>`
-- **Key files identified so far:**
-  - `cli.py` — handles command-line input and dispatches to the logic
-  - `task_manager.py` — contains the `TaskManager` class with the actual task logic
-  - `models.py` — defines `TaskStatus`, `TaskPriority`, and probably a `Task` class/data structure
-  - `tests/` — unit tests for the project
-
+Exercise part 1-4
 ---
-
-## File: `cli.py`
-
-**Purpose:** Entry point for the CLI. Parses command-line arguments and calls methods on `TaskManager`.
-
-**Key concepts encountered:**
-| Concept | What it means |
-|---|---|
-| `argparse` | Python's built-in library for parsing command-line arguments |
-| Subparsers | Lets one script support multiple subcommands (`create`, `list`, `show`, etc.) |
-| Positional argument | Required input, order matters (e.g. `title`) |
-| Optional flag | e.g. `-p` / `--priority`, not required unless specified |
-| `choices=[...]` | Restricts valid input values |
-| `default=...` | Value used if the flag is omitted |
-| `action="store_true"` | Makes a flag a simple on/off switch |
-| f-string | Python syntax for formatting strings with embedded variables |
-| Enum (`TaskStatus`, `TaskPriority`) | A fixed set of named values instead of raw strings/numbers |
-
-**Notable observations:**
-- The README describes commands like `update-status`, `update-priority`, `add-tag` — but the actual code uses `status`, `priority`, `tag`, `untag`. **README may be outdated.**
-- `cli.py` contains no actual task-storage logic — it only translates commands into calls on `TaskManager`. Logic and interface are separated (good design practice).
----
-
-## File: `task_manager.py`
-
-**Purpose:** *Contains TaskManager, the business-logic layer. Converts raw CLI input (strings/ints) into proper domain objects, and coordinates between Task/enums (models.py) and persistence (storage.py).*
-
-**Key concepts encountered:**
--Concept	What it means
-TaskPriority(priority_value)	Converting a raw int into an Enum member; raises an error if invalid
-datetime.strptime(str, format)	Parses a text date into a real datetime object
-try/except ValueError	Catches bad date input instead of crashing
-Delegation to self.storage	TaskManager never touches files directly — it calls methods on a TaskStorage object instead
-
-**Notable observations:**
--create_task() builds a Task object, then hands it to storage.add_task() — TaskManager doesn't know or care how it's saved.
-update_task_status() has a special case: setting status to DONE goes through task.mark_as_done() (which also stamps completed_at), while any other status goes through a generic storage.update_task(task_id, status=...). Two different code paths for what looks like "the same kind of action."
-get_statistics() builds counts by looping over all tasks in memory (self.storage.get_all_tasks()) rather than asking storage to do the counting — logic lives in the manager layer, not the storage layer.
-
-## File: `models.py`
-
-**Purpose:** *Purpose: Defines the core data: the Task class itself, plus the TaskPriority and TaskStatus enums.*
-
-**Key concepts encountered:**
--Concept	What it means
-Enum	A fixed, named set of valid values (e.g. TaskStatus.TODO) instead of raw strings/numbers scattered everywhere
-uuid.uuid4()	Generates a random unique ID — this is why task IDs are long random strings, not sequential numbers
-tags=None then tags or []	Avoids a classic Python bug where a mutable default argument (like tags=[]) gets shared across every instance
-**kwargs + hasattr/setattr	A generic way to update any attribute by name, without writing a separate method for each field
-
-**Notable observations:**
--Every new Task is hardcoded to start at TaskStatus.TODO — you can't create a task that starts "in progress" or "done."
-mark_as_done() bundles two changes together (status + completed_at) into one method — encapsulating a business rule on the model itself rather than leaving callers to remember to set both fields.
-is_overdue() returns False if there's no due date, and also False if the task is already DONE — even if the due date has passed. So "overdue" specifically means "not done and past due," not just "past due."
-update() has no validation — it will happily overwrite any attribute that exists on the object, including id or created_at, if called carelessly.
-
----
-
+**Exercise Part 1: Understanding a Specific Feature**
+ 
 Feature Deep-Dive: Task Creation & Status Updates
 Main components involved
 cli.py — entry point, parses arguments
