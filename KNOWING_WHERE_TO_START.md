@@ -12,11 +12,10 @@ For each exercise part, I recorded the prompts I used, what I learned, and any s
 
 ## Exercise Part 1: Understanding Project Structure
 
-I familiarized myself with the codebase structure and configuration files like package.json, pom.xml, and requirement.txt etc, as well as their functions in programming. I skimmed through main files of the provided codes.
+I familiarized myself with the task_manager.py codebase structure and configuration files like package.json, pom.xml, and requirement.txt etc, as well as their functions in programming. I skimmed through main files of the provided codes.
 
 - Prompts/commands I used:
-  -
-  -
+  - Prompt 1: Understanding Project Structure and Technology Stack
 
 - What I learned about how the project is organized:
   -
