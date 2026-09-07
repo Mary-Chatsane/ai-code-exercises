@@ -1,8 +1,8 @@
 # Code Understanding Journal - Exercise: Codebase Exploration Challenge
 
-A running log of my findings as I learn how the Task Management System is built.
+A running log of my findings as I learn how the python Task Management System is built.
 ---
-Exercise part 1-4
+Exercise part 1-4 
 ---
 **Exercise Part 1: Understanding a Specific Feature**
  
