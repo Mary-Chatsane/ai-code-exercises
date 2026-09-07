@@ -12,7 +12,7 @@ For each exercise part, I recorded the prompts I used, what I learned, and any s
 
 ## Exercise Part 1: Understanding Project Structure
 
-**Goal:** Get oriented in the codebase before diving into any specific feature.
+I familiarized myself with the codebase structure and configuration files like package.json, pom.xml, and requirement.txt etc, as well as their functions in programming. I skimmed through main files of the provided codes.
 
 - Prompts/commands I used:
   -
