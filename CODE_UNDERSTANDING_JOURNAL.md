@@ -118,3 +118,6 @@ responds to direct prompt after I had attempted to fill it according to my under
 *Any misconceptions you had that were clarified*
 - The misconception was basically own how files interactions work with each other. I only understood as I asked and answered questions that AI asked me, and that the README that I worked with in this exercise was not part of the program executions. The point was for me to understand how task commands that have to do with low to high priorities are made. So that was a highlight for me, because to understand how code works, I needed to understand the base of it, and how commands in task creation are made.
 
+
+**Exercise part 3: Mapping data flow**
+
