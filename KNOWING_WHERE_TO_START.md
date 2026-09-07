@@ -1,12 +1,12 @@
 # Knowing Where to Start
 
-*A code understanding journal for exploring the Task Manager codebase*
+# Exercise part 1-4
 
 ---
 
-## How to Use This Journal
+**Setup**
 
-For each exercise part, record the prompts you used, what you learned, and any surprises along the way. The goal isn't just to answer questions about the code — it's to build a repeatable process for approaching unfamiliar codebases.
+For each exercise part, I recorded the prompts I used, what I learned, and any surprises I came across.
 
 ---
 
