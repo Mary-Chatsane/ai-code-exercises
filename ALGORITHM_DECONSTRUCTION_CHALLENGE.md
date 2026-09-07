@@ -1,7 +1,9 @@
-Using AI to comprehend existing codebases
-Exercise: Algorithm Deconstruction Challenge
+# Using AI to comprehend existing codebases
+---
+## Exercise: Algorithm Deconstruction Challenge
 
-Reflection Questions
+**Reflection Questions**
+
 How did the AI’s explanation change your understanding of the algorithm?
 _ it made sense to my confusions and added debth to the algorithm prompt.
 
