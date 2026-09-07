@@ -11,7 +11,7 @@ Main components involved
 cli.py — entry point, parses arguments
 TaskManager.create_task() / TaskManager.update_task_status() — business logic
 Task (constructor and mark_as_done()) — the data + a couple of self-contained rules
-TaskStorage (in storage.py, not yet reviewed) — persistence, assumed to read/write tasks.json
+TaskStorage in storage.py — persistence, assumed to read/write tasks.json
 
 **Execution flow — creating a task**
 python cli.py create "Title" -p 3 -u "2024-02-01" → cli.py parses args → calls TaskManager.create_task(...)
