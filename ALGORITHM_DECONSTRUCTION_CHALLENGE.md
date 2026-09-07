@@ -1,6 +1,6 @@
 # Using AI to comprehend existing codebases
 ---
-## Exercise: Algorithm Deconstruction Challenge
+## Exercise: Algorithm Deconstruction Challenge (python)
 
 **Reflection Questions**
 
