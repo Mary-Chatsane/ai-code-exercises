@@ -6,7 +6,7 @@
 
 **Setup**
 
-For each exercise part, I recorded the prompts I used, what I learned, and any surprises I came across.
+For each exercise part, I recorded the prompts I used, as well as what I learned.
 
 ---
 
@@ -19,15 +19,11 @@ I familiarized myself with the task_manager.py codebase structure and configurat
 
 - What I learned about how the project is organized:
 
-  - My best guess is that the codebase is organized into separate components with different responsibilities. TaskManager appears to sit between the command-line interface and the storage layer. It imports task-related classes from models.py, such as Task, TaskStatus, and TaskPriority, which are used to represent and manage task information. TaskManager also creates a TaskStorage object, using tasks.json as the storage path. This suggests that TaskStorage is responsible for handling the persistence and retrieval of task data, while TaskManager handles the higher-level task operations. My current mental model is therefore: cli.py → TaskManager → TaskStorage → tasks.json, with TaskManager also relying on models.py for the task objects and their statuses/priorities.
+My best guess is that the codebase is organized into separate components with different responsibilities. TaskManager appears to sit between the command-line interface and the storage layer. It imports task-related classes from models.py, such as Task, TaskStatus, and TaskPriority, which are used to represent and manage task information. TaskManager also creates a TaskStorage object, using tasks.json as the storage path. This suggests that TaskStorage is responsible for handling the persistence and retrieval of task data, while TaskManager handles the higher-level task operations. My current mental model is therefore: cli.py → TaskManager → TaskStorage → tasks.json, with TaskManager also relying on models.py for the task objects and their statuses/priorities.
+---
+**Prompt 1: "Understanding Project Structure and Technology Stack" prompt with AI**
 
-- Key directories/files and what they're for:
-  | Path | Purpose |
-  |------|---------|
-  |      |         |
 
-- Anything that surprised me or didn't match my expectations:
-  -
 
 ---
 
