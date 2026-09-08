@@ -25,6 +25,7 @@ My best guess is that the codebase is organized into separate components with di
 **Prompt 1: "Understanding Project Structure and Technology Stack" prompt with AI**
 
 *Initial understanding questions*
+
 my understanding is that the project structure of the Task Management System is structured in a way that the developer of a project chooses to structure their project files. As a beginner, I have learned that the structure of this Task Management System project goes as follows: 
 
 task-manager/
@@ -33,11 +34,16 @@ task-manager/
 ├── task_manager.py         ← task-management operations
 ├── models.py               ← task-related models/classes
 ├── storage.py              ← likely data storage/retrieval
-├── task_list_merger.py  ←likely combines/merges task lists
+├── task_list_merger.py     ← likely combines/merges task lists
 ├── task_parser.py          ← likely parses task-related data/input
 ├── task_priority.py        ← likely handles task priorities
 └── README.md               ← project documentation
 
+The prompt helped me understand what the application does based on the files involved. it gave me deeper insight of the task management. I had assumptions on how files interacted with each other and did not understand the technologies used, and only got to find out that the technologies are in fact; programming languages, frameworks, libraries, tools, and platforms used to build/run/test the application. what I did not know was that the term 'technologies' is used for such. As a result, the application appears to rely entirely on pythons standard library rather than external packages/frameworks. 
+
+*AI analysis compared to my observation*
+AI analysis were more sure and reliant on evidence and documents placed before it, whilst I made a couple of intuitive guesses and assumptions. But I received corrections, and a better understanding. From that I also learnt that pythons standard libraries like argparse, datetime and unittest are also technologies and the project itself is divided into several python modules mentioned above. 
+ 
 ---
 
 ## Exercise Part 2: Finding Feature Implementation
