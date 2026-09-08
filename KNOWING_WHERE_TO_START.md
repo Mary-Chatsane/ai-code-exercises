@@ -24,7 +24,19 @@ My best guess is that the codebase is organized into separate components with di
 ---
 **Prompt 1: "Understanding Project Structure and Technology Stack" prompt with AI**
 
+*Initial understanding questions*
+my understanding is that the project structure of the Task Management System is structured in a way that the developer of a project chooses to structure their project files. As a beginner, I have learned that the structure of this Task Management System project goes as follows: 
 
+task-manager/
+│
+├── cli.py                  ← command-line interface
+├── task_manager.py         ← task-management operations
+├── models.py               ← task-related models/classes
+├── storage.py              ← likely data storage/retrieval
+├── task_list_merger.py  ←likely combines/merges task lists
+├── task_parser.py          ← likely parses task-related data/input
+├── task_priority.py        ← likely handles task priorities
+└── README.md               ← project documentation
 
 ---
 
