@@ -109,15 +109,15 @@ Based on my search, no export functionality currently exists. The most relevant 
 
 Files affected:
 
-*cli.py* — new export subparser + handling block
-*task_manager.py* — new export_tasks_to_csv() method (the bridge)
-*New file*: task_exporter.py (or similar) — the actual CSV-writing logic, mirroring how storage.py isolates encoding logic
-*models.py* — not modified, but its fields to decide CSV columns should be known.
-*storage.py* — not modified, but get_all_tasks() is the data source
+`cli.py` — new export subparser + handling block
+`task_manager.py` — new export_tasks_to_csv() method (the bridge)
+`New file`: task_exporter.py (or similar) — the actual CSV-writing logic, mirroring how storage.py isolates encoding logic
+`models.py` — not modified, but its fields to decide CSV columns should be known.
+`storage.py` — not modified, but get_all_tasks() is the data source
 
 **Approach**:
 
-New module task_exporter.py — keep CSV logic separate from storage logic, same way task_parser.py is separate from task_manager.py. Use Python's built-in csv module (csv.writer or csv.DictWriter). Convert enums (task.priority.name, task.status.value) and datetimes (.isoformat()) to strings, same conversions TaskEncoder already does.
+New module task_exporter.py — keep CSV logic separate from storage logic, same way task_parser.py is separate from `task_manager.py`. Use Python's built-in csv module `(csv.writer` or `csv.DictWriter)`. Convert enums `(task.priority.name`, `task.status.value)` and `datetimes` `(.isoformat())` to strings, same conversions `TaskEncoder` already does.
 
 ---
 
@@ -127,20 +127,20 @@ New module task_exporter.py — keep CSV logic separate from storage logic, same
 
 *Core entity classes (from models.py):*
 
-Task — the central entity: id, title, description, priority, status, created_at, updated_at, due_date, completed_at, tags
-TaskPriority (enum) — LOW, MEDIUM, HIGH, URGENT (values 1–4)
-TaskStatus (enum) — TODO, IN_PROGRESS, REVIEW, DONE (string values)
+`Task` — the central entity: id, title, description, priority, status, created_at, updated_at, due_date, completed_at, tags
+`TaskPriority` (enum) — LOW, MEDIUM, HIGH, URGENT (values 1–4)
+`TaskStatus` (enum) — TODO, IN_PROGRESS, REVIEW, DONE (string values)
 
 *Business logic scattered across other files:*
 
 Task.mark_as_done() and Task.is_overdue() — behavior lives on the entity itself
-task_priority.py — a derived concept not stored on the model: an importance score, computed from priority weight + due-date urgency + status penalty + tag boosts + recency boost
+`task_priority.py` — a derived concept not stored on the model: an importance score, computed from priority weight + due-date urgency + status penalty + tag boosts + recency boost
 task_list_merge.py — conflict resolution rules for sync (most-recent-wins, but DONE status always wins regardless of timestamp, tags always union)
-task_parser.py — a mini "task shorthand" syntax specific to this app (!priority, @tag, #date)
+`task_parser.py` — a mini "task shorthand" syntax specific to this app (!priority, @tag, #date)
 
 *Concepts that are specific to the application:*
 
-Overdue" = has a due date in the past and not DONE (REVIEW/IN_PROGRESS tasks can be overdue, but DONE tasks never are)
+"Overdue" = has a due date in the past and not DONE (REVIEW/IN_PROGRESS tasks can be overdue, but DONE tasks never are)
 "Score"/"importance" is a computed ranking value, not a stored field
 Status transitions aren't validated anywhere — nothing stops you going DONE → TODO → REVIEW in any order
 
@@ -148,13 +148,16 @@ Status transitions aren't validated anywhere — nothing stops you going DONE �
 
 *How the entities relate*
 
-`Task` is the central entity in this domain. It doesn't stand alone — two of its own fields are constrained by enums: `Task.priority` can only be one of the four `TaskPriority` values (LOW/MEDIUM/HIGH/URGENT), and Task.status can only be one of the four TaskStatus values (TODO/IN_PROGRESS/REVIEW/DONE). So TaskPriority and TaskStatus aren't independent entities in their own right — they're closed vocabularies that Task is typed against.
-Around that core, four modules each have a distinct relationship to Task:
-task_parser creates Task objects. It's a factory: it takes free-form shorthand text and produces a new, fully-formed Task instance.
-task_priority reads Task objects but never changes them. It computes a derived "importance score" from a task's priority, due date, status, and tags — this score isn't stored on the Task itself, it's calculated fresh each time.
-task_list_merge reconciles two versions of the same Task (a local copy and a remote copy), applying rules to decide which fields win, and returns a merged Task.
-storage.py persists Task objects — it's the only module that knows how to turn a Task into JSON and back again.
-Finally, task_manager.py orchestrates all of the above. It's the facade that cli.py talks to — when the CLI needs to create, filter, update, or export tasks, task_manager.py is what calls into task_parser, task_priority, task_list_merge, and storage.py on Task's behalf. Task never talks to any of these modules directly; they all reach in through task_manager.py.
+`Task` is the central entity in this domain. It doesn't stand alone — two of its own fields are constrained by enums: `Task.priority` can only be one of the four `TaskPriority` values (LOW/MEDIUM/HIGH/URGENT), and `Task.status` can only be one of the four `TaskStatus` values (TODO/IN_PROGRESS/REVIEW/DONE). So `TaskPriority` and `TaskStatus` aren't independent entities in their own right — they're closed vocabularies that `Task` is typed against.
+
+Around that core, four modules each have a distinct relationship to `Task`:
+
+`task_parser` creates `Task` objects. It's a factory: it takes free-form shorthand text and produces a new, fully-formed Task instance.
+`task_priority` reads Task objects but never changes them. It computes a derived "importance score" from a task's priority, due date, status, and tags — this score isn't stored on the `Task` itself, it's calculated fresh each time.
+`task_list_merge` reconciles two versions of the same Task (a local copy and a remote copy), applying rules to decide which fields win, and returns a merged `Task`.
+`storage.py` persists `Task` objects — it's the only module that knows how to turn a `Task` into JSON and back again.
+
+Finally, `task_manager.py` orchestrates all of the above. It's the facade that cli.py talks to — when the CLI needs to create, filter, update, or export tasks, `task_manager.py` is what calls into `task_parser`, `task_priority`, `task_list_merge`, and storage.py on Task's behalf. `Task` never talks to any of these modules directly; they all reach in through `task_manager.py`.
 
 
 
