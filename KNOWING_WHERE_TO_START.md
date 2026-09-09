@@ -105,9 +105,19 @@ Based on my search, no export functionality currently exists. The most relevant 
 
 ## **4.Documented findings**
 
+**Implementing "Task Export to CSV"**
 
-- 
-  -
+Files affected:
+
+*cli.py* — new export subparser + handling block
+*task_manager.py* — new export_tasks_to_csv() method (the bridge)
+*New file*: task_exporter.py (or similar) — the actual CSV-writing logic, mirroring how storage.py isolates encoding logic
+*models.py* — not modified, but its fields to decide CSV columns should be known.
+*storage.py* — not modified, but get_all_tasks() is the data source
+
+**Approach**:
+
+New module task_exporter.py — keep CSV logic separate from storage logic, same way task_parser.py is separate from task_manager.py. Use Python's built-in csv module (csv.writer or csv.DictWriter). Convert enums (task.priority.name, task.status.value) and datetimes (.isoformat()) to strings, same conversions TaskEncoder already does.
 
 ---
 
