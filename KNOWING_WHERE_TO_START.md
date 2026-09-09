@@ -298,7 +298,7 @@ The role played by storage.py — the only place a Task is converted to/from JSO
 `task_manager.py` — needs a method that actually applies the status change (e.g. `check_and_abandon_overdue_tasks())`, since `task_manager.py` is the facade that mutates state and would call `storage.save()` afterward.
 `cli.py` — maybe. This is the open question below.
 
--*Questions I would ask team before implementing*:
+- *Questions I would ask team before implementing*:
 
 Since this rule is automatic — "should be marked" implies it happens without a user typing a command. So before touching any file, we would need to decide: does this run every time the app loads tasks (e.g., inside `TaskStorage.load()` or `TaskManager.__init__)`? On every `list` command? On a schedule (cron)? Or is it actually meant to be a manual CLI command like `check-abandoned` that a human runs periodically?
 
