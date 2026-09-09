@@ -144,7 +144,17 @@ Overdue" = has a due date in the past and not DONE (REVIEW/IN_PROGRESS tasks can
 "Score"/"importance" is a computed ranking value, not a stored field
 Status transitions aren't validated anywhere — nothing stops you going DONE → TODO → REVIEW in any order
 
-## **Initial understanding**
+## 2.**Initial understanding**
+
+*How the entities relate*
+
+`Task` is the central entity in this domain. It doesn't stand alone — two of its own fields are constrained by enums: `Task.priority` can only be one of the four `TaskPriority` values (LOW/MEDIUM/HIGH/URGENT), and Task.status can only be one of the four TaskStatus values (TODO/IN_PROGRESS/REVIEW/DONE). So TaskPriority and TaskStatus aren't independent entities in their own right — they're closed vocabularies that Task is typed against.
+Around that core, four modules each have a distinct relationship to Task:
+task_parser creates Task objects. It's a factory: it takes free-form shorthand text and produces a new, fully-formed Task instance.
+task_priority reads Task objects but never changes them. It computes a derived "importance score" from a task's priority, due date, status, and tags — this score isn't stored on the Task itself, it's calculated fresh each time.
+task_list_merge reconciles two versions of the same Task (a local copy and a remote copy), applying rules to decide which fields win, and returns a merged Task.
+storage.py persists Task objects — it's the only module that knows how to turn a Task into JSON and back again.
+Finally, task_manager.py orchestrates all of the above. It's the facade that cli.py talks to — when the CLI needs to create, filter, update, or export tasks, task_manager.py is what calls into task_parser, task_priority, task_list_merge, and storage.py on Task's behalf. Task never talks to any of these modules directly; they all reach in through task_manager.py.
 
 
 
