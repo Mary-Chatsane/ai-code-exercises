@@ -287,13 +287,21 @@ The role played by storage.py — the only place a Task is converted to/from JSO
 
 ## Exercise Part 4: Practical Application
 
-**Goal:** Apply your understanding by implementing a new business rule.
+- *The new business logic the team needs to implement*:
 
-- The business rule I implemented:
-  -
+  -Tasks that are overdue for more than 7 days should be automatically marked as abandoned unless they are marked as high priority."
 
-- Where in the codebase I made changes:
-  -
+- *files to modify with outlined changes*:
+
+`models.py` — `TaskStatus` currently only has TODO/IN_PROGRESS/REVIEW/DONE. There's no `ABANDONED` value. You'd need to add it to the enum first, before anything else can reference it.
+`models.py` (again) — `Task` already has `is_overdue()`. The new rule's condition ("overdue by more than 7 days, unless HIGH priority") is a variant of that logic, so it likely belongs right next to `is_overdue()` as something like `should_be_abandoned()` — following the pattern already established rather than reinventing it elsewhere.
+`task_manager.py` — needs a method that actually applies the status change (e.g. `check_and_abandon_overdue_tasks())`, since `task_manager.py` is the facade that mutates state and would call `storage.save()` afterward.
+`cli.py` — maybe. This is the open question below.
+
+-*Questions I would ask team before implementing*:
+
+Since this rule is automatic — "should be marked" implies it happens without a user typing a command. So before touching any file, we would need to decide: does this run every time the app loads tasks (e.g., inside `TaskStorage.load()` or `TaskManager.__init__)`? On every `list` command? On a schedule (cron)? Or is it actually meant to be a manual CLI command like `check-abandoned` that a human runs periodically?
+
 
 - Prompts/commands I used to figure out where/how to make the change:
   -
