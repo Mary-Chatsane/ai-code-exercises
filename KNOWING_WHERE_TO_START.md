@@ -34,7 +34,7 @@ task-manager/
 ├── task_manager.py         ← task-management operations
 ├── models.py               ← task-related models/classes
 ├── storage.py              ← likely data storage/retrieval
-├── task_list_merger.py     ← likely combines/merges task lists
+├── task_list_merge.py      ← likely combines/merges task lists
 ├── task_parser.py          ← likely parses task-related data/input
 ├── task_priority.py        ← likely handles task priorities
 └── README.md               ← project documentation
