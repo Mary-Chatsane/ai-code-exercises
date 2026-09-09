@@ -123,7 +123,62 @@ New module task_exporter.py — keep CSV logic separate from storage logic, same
 
 ## Exercise Part 3: Understanding Domain Model
 
-**Goal:** Understand the core entities, relationships, and business concepts the code represents.
+## 1.**domain model**
+
+*Core entity classes (from models.py):*
+
+Task — the central entity: id, title, description, priority, status, created_at, updated_at, due_date, completed_at, tags
+TaskPriority (enum) — LOW, MEDIUM, HIGH, URGENT (values 1–4)
+TaskStatus (enum) — TODO, IN_PROGRESS, REVIEW, DONE (string values)
+
+*Business logic scattered across other files:*
+
+Task.mark_as_done() and Task.is_overdue() — behavior lives on the entity itself
+task_priority.py — a derived concept not stored on the model: an importance score, computed from priority weight + due-date urgency + status penalty + tag boosts + recency boost
+task_list_merge.py — conflict resolution rules for sync (most-recent-wins, but DONE status always wins regardless of timestamp, tags always union)
+task_parser.py — a mini "task shorthand" syntax specific to this app (!priority, @tag, #date)
+
+*Concepts that are specific to the application:*
+
+Overdue" = has a due date in the past and not DONE (REVIEW/IN_PROGRESS tasks can be overdue, but DONE tasks never are)
+"Score"/"importance" is a computed ranking value, not a stored field
+Status transitions aren't validated anywhere — nothing stops you going DONE → TODO → REVIEW in any order
+
+## **Initial understanding**
+
+┌─────────────────────┐
+                    │        Task         │
+                    │ id, title, tags,    │
+                    │ dates               │
+                    └──────────┬──────────┘
+                    referenced by / typed by
+                ┌───────────────┴───────────────┐
+                ▼                               ▼
+      ┌───────────────────┐          ┌───────────────────┐
+      │   TaskPriority     │          │    TaskStatus       │
+      │ LOW/MED/HIGH/URGENT│          │ TODO/PROGRESS/etc.  │
+      └────────────────────┘          └─────────────────────┘
+
+  Modules that operate on Task:
+
+  ┌─────────────────────┐         ┌─────────────────────┐
+  │    task_parser       │         │    task_priority      │
+  │ text -> Task          │         │ scores importance     │
+  │ (creates)             │         │ (read-only, derived)  │
+  └─────────────────────┘         └─────────────────────┘
+
+  ┌─────────────────────┐         ┌─────────────────────┐
+  │  task_list_merge      │         │    storage.py          │
+  │ reconciles conflicts  │         │ saves/loads Task       │
+  │ between local/remote  │         │ (JSON persistence)     │
+  └─────────────────────┘         └─────────────────────┘
+
+              All four modules are orchestrated by:
+              ┌─────────────────────────┐
+              │     task_manager.py       │
+              │ facade used by cli.py      │
+              └─────────────────────────┘
+
 
 - Prompts/commands I used:
   -
