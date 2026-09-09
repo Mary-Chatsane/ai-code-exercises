@@ -5,7 +5,7 @@
 **Reflection Questions**
 
 How did the AI’s explanation change your understanding of the algorithm?
-_ it made sense to my confusions and added debth to the algorithm prompt.
+After filling out the prompt, AI highlighted my misunderstandings and corrected my mishaps that only needed little fixing. It explained the whole algorithm into key sections. It explained the calculation behind sorting tasks by priority level.  
 
 What aspects were still difficult to understand after AI explanation?
 - the task calculation with python, and how priority levels do mean urgent is automatically mean "highest than the other levels when calculated
