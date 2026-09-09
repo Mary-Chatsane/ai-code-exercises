@@ -160,9 +160,24 @@ Around that core, four modules each have a distinct relationship to `Task`:
 Finally, `task_manager.py` orchestrates all of the above. It's the facade that cli.py talks to — when the CLI needs to create, filter, update, or export tasks, `task_manager.py` is what calls into `task_parser`, `task_priority`, `task_list_merge`, and storage.py on Task's behalf. `Task` never talks to any of these modules directly; they all reach in through `task_manager.py`.
 
 
+*What each entity represents:*
+
+`Task` — the aggregate root; everything else operates on it
+`TaskPriority/TaskStatus` — enums that constrain two of `Task`'s fields to fixed value sets, not free-standing entities
+`task_parser` — a factory that builds `Task` objects from shorthand text
+`task_priority` — read-only; computes a derived score, never mutates the model
+`task_list_merge` — conflict-resolution rules for two copies of the same task
+`storage.py` — persistence boundary; the only place `Task` gets serialized/deserialized
+`task_manager.py` — the facade tying it all together for `cli.py`
+
+*Open questions about the business logic:*
+
+Should `is_overdue()/mark_as_done()` live on `Task` itself (as they do now) or move to a service layer? Right now behavior and data are mixed on the entity.
+No validation exists anywhere for status transitions — is that intentional, or a gap?
+`task_priority`'s score is never persisted or exposed via CLI — is it dead code, or feeding something not yet built?
 
 
-- Prompts/commands I used:
+-## **Domain model Prompt I used**:
   -
   -
 
