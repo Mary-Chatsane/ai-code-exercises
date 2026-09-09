@@ -310,9 +310,7 @@ Since this rule is automatic — "should be marked" implies it happens without a
 
 | Prompt | Insight Gained.                                |
 |----------------|----------------------------------------|
-| Finding Feature
-  Implementation 
-  Locations
+| Finding Feature Implementation  Locations
 
 **Any strategies you've developed for approaching unfamiliar code in the future**
 
