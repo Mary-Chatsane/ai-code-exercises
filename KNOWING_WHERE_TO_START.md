@@ -50,7 +50,7 @@ AI analysis were more sure and reliant on evidence and documents placed before i
 
 ## **1.Initial search**
 
-I searched the codebase, looked into cli.py, models.py, storage.py, task_manager.py, task_parser.py, task_list_merge.py, task_priority.py, and this is *what I found in storage.py* (file related functionality that reads and writes task data from a file)
+I searched the codebase, looked into cli.py, models.py, storage.py, task_manager.py, task_parser.py, task_list_merge.py, task_priority.py, and this is what I found in *storage.py* (file related functionality that reads and writes task data from a file)
 
 with open(self.storage_path, 'r') as f:
     tasks_data = json.load(f, cls=TaskDecoder)
@@ -60,7 +60,7 @@ with open(self.storage_path, 'w') as f:
 
 which means TaskStorage is responsible for loading and saving tasks to a JSON file (tasks.json). It uses json.load() to read tasks and json.dump() to write them.
 
-*what I found in Task_Manager.py*
+what I found in *Task_Manager.py*
 
 self.storage = TaskStorage(storage_path)
 
@@ -74,7 +74,6 @@ The codebase already has a mechanism for converting task objects into JSON and w
 
 I suspect the new CSV export functionality may belong near the existing storage/data-handling functionality because TaskStorage already handles writing task data to an external file. However, I need to investigate TaskEncoder/TaskDecoder and how task data is represented before deciding where the CSV functionality should actually be implemented. cli.py would also likely need modification so the user can trigger the export command.
 
--
 
 ## **3.Feature location Prompt**
 
@@ -104,7 +103,6 @@ Based on my search, no export functionality currently exists. The most relevant 
 - cli.py (would need a new "export" subparser)
 - task_manager.py (would need a new method to bridge cli.py → storage)
 
-- 
 ## **4.Documented findings**
 
 
