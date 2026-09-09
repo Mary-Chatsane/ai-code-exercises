@@ -48,21 +48,42 @@ AI analysis were more sure and reliant on evidence and documents placed before i
 
 ## Exercise Part 2: Finding Feature Implementation
 
-**Goal:** Trace a specific feature from entry point to implementation.
+**1.Initial search**
 
-- Feature I chose to trace:
+I searched the codebase,and this is *what I found in storage.py* (file related functionality that reads and writes task data from a file)
+
+with open(self.storage_path, 'r') as f:
+    tasks_data = json.load(f, cls=TaskDecoder)
+
+with open(self.storage_path, 'w') as f:
+    json.dump(list(self.tasks.values()), f, cls=TaskEncoder, indent=2)
+
+which means TaskStorage is responsible for loading and saving tasks to a JSON file (tasks.json). It uses json.load() to read tasks and json.dump() to write them.
+
+*what I found in Task_Manager.py*
+
+self.storage = TaskStorage(storage_path)
+
+THEREFORE:
+No existing CSV functionality found
+
+
+**2.Hyphothesis**
+
+The codebase already has a mechanism for converting task objects into JSON and writing them to an external file. Which means the search might provide a pattern for implementing CSV export. In all the other files I didn't find anything that looked like a file that could have been exported.
+
+I suspect the new CSV export functionality may belong near the existing storage/data-handling functionality because TaskStorage already handles writing task data to an external file. However, I need to investigate TaskEncoder/TaskDecoder and how task data is represented before deciding where the CSV functionality should actually be implemented. cli.py would also likely need modification so the user can trigger the export command.
+
+-
+
+**3.Feature location Prompt**
+
+  -
   -
 
-- Prompts/commands I used:
-  -
-  -
+- 
 
-- Path the code takes (entry point → logic → data layer):
-  1.
-  2.
-  3.
-
-- What patterns or conventions did I notice repeated across features?
+- 
   -
 
 ---
