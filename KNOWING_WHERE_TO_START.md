@@ -146,38 +146,7 @@ Status transitions aren't validated anywhere — nothing stops you going DONE �
 
 ## **Initial understanding**
 
-┌─────────────────────┐
-                    │        Task         │
-                    │ id, title, tags,    │
-                    │ dates               │
-                    └──────────┬──────────┘
-                    referenced by / typed by
-                ┌───────────────┴───────────────┐
-                ▼                               ▼
-      ┌───────────────────┐          ┌───────────────────┐
-      │   TaskPriority     │          │    TaskStatus       │
-      │ LOW/MED/HIGH/URGENT│          │ TODO/PROGRESS/etc.  │
-      └────────────────────┘          └─────────────────────┘
 
-  Modules that operate on Task:
-
-  ┌─────────────────────┐         ┌─────────────────────┐
-  │    task_parser       │         │    task_priority      │
-  │ text -> Task          │         │ scores importance     │
-  │ (creates)             │         │ (read-only, derived)  │
-  └─────────────────────┘         └─────────────────────┘
-
-  ┌─────────────────────┐         ┌─────────────────────┐
-  │  task_list_merge      │         │    storage.py          │
-  │ reconciles conflicts  │         │ saves/loads Task       │
-  │ between local/remote  │         │ (JSON persistence)     │
-  └─────────────────────┘         └─────────────────────┘
-
-              All four modules are orchestrated by:
-              ┌─────────────────────────┐
-              │     task_manager.py       │
-              │ facade used by cli.py      │
-              └─────────────────────────┘
 
 
 - Prompts/commands I used:
