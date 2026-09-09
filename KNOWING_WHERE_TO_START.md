@@ -4,7 +4,7 @@
 
 ---
 
-**Setup**
+## Submission 
 
 For each exercise part, I recorded the prompts I used, as well as what I learned.
 
@@ -303,50 +303,20 @@ The role played by storage.py — the only place a Task is converted to/from JSO
 Since this rule is automatic — "should be marked" implies it happens without a user typing a command. So before touching any file, we would need to decide: does this run every time the app loads tasks (e.g., inside `TaskStorage.load()` or `TaskManager.__init__)`? On every `list` command? On a schedule (cron)? Or is it actually meant to be a manual CLI command like `check-abandoned` that a human runs periodically?
 
 
-- Prompts/commands I used to figure out where/how to make the change:
-  -
-  -
+-*Reflection*:
 
-- Challenges I ran into:
-  -
 
-- How I verified the change worked correctly:
-  -
+**The most valuable insights gained from each prompt**
 
----
+| Prompt | Insight Gained.                                |
+|----------------|----------------------------------------|
+| Finding Feature
+  Implementation 
+  Locations
 
-## Final Discussion and Reflection
+**Any strategies you've developed for approaching unfamiliar code in the future**
 
-- Overall reflections on the exercise:
-  -
-
-- What was harder or easier than expected:
-  -
-
----
-
-## Submission
-
-**1. Your initial vs. final understanding of the Task Manager codebase**
-
-*Initial understanding:*
--
-
-*Final understanding:*
--
-
-**2. The most valuable insights gained from each prompt**
-
-| Prompt | Insight Gained |
-|--------|-----------------|
-|        |                 |
-
-**3. Your approach to implementing the new business rule**
-
--
-
-**4. Any strategies you've developed for approaching unfamiliar code in the future**
-
--
--
+- I learned how to make an export of a file, and what files to look at in order to make implementation of new rules. 
+- I have learned how the codebase work, the functions and responsibilities for each file. 
+- Making use of AI when using Prompts makes reading code efficient and easy to work around. 
 -
