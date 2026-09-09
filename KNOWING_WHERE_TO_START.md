@@ -48,7 +48,7 @@ AI analysis were more sure and reliant on evidence and documents placed before i
 
 ## Exercise Part 2: Finding Feature Implementation
 
-# **1.Initial search**
+## **1.Initial search**
 
 I searched the codebase, looked into cli.py, models.py, storage.py, task_manager.py, task_parser.py, task_list_merge.py, task_priority.py, and this is *what I found in storage.py* (file related functionality that reads and writes task data from a file)
 
@@ -68,7 +68,7 @@ THEREFORE:
 No existing CSV functionality found
 
 
-# **2.Hyphothesis**
+## **2.Hyphothesis**
 
 The codebase already has a mechanism for converting task objects into JSON and writing them to an external file. Which means the search might provide a pattern for implementing CSV export. In all the other files I didn't find anything that looked like a file that could have been exported.
 
@@ -76,7 +76,7 @@ I suspect the new CSV export functionality may belong near the existing storage/
 
 -
 
-# **3.Feature location Prompt**
+## **3.Feature location Prompt**
 
 After using and filling the "finding feature implementation location" with AI, I found that my findings were the same findings that Claude shared and confirmed: there's genuinely no existing export or CSV functionality anywhere in this codebase.
 
@@ -105,7 +105,7 @@ Based on my search, no export functionality currently exists. The most relevant 
 - task_manager.py (would need a new method to bridge cli.py → storage)
 
 - 
-# **4.Documented findings**
+## **4.Documented findings**
 
 
 - 
