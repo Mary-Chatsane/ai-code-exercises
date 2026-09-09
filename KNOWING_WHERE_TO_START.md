@@ -308,21 +308,15 @@ Since this rule is automatic — "should be marked" implies it happens without a
 
 **The most valuable insights gained from each prompt**
 
-| Prompt | Insight Gained.                                |
-|----------------|----------------------------------------|
-| Finding Feature Implementation  Locations
-
-
 | Prompt | Insight Gained |
 |---|---|
 | Finding Feature Implementation Locations | Confirmed no export functionality existed anywhere in the codebase, and revealed that storage.py's save/load pattern was the closest template to follow — even though the feature itself needed a brand-new file (task_exporter.py), not a modification of existing files. |
 | Understanding Domain Models and Business Concepts | Distinguished between declared data (priority, set by a human) and derived data (the urgency score, calculated from other fields) — a distinction that isn't obvious from reading the code alone, and that matters for deciding where new logic should live. |
 | Practical Application (abandoned-task rule) | Realized that not every new feature is purely additive like the CSV export was — this rule required modifying an existing enum (TaskStatus) and existing methods (alongside is_overdue()), and exposed a genuine design gap (when/how the rule triggers) that no amount of code-reading alone would resolve — it needed a question for the team. |
 
-
-**Any strategies you've developed for approaching unfamiliar code in the future**
+**Any strategies you've developed for approaching unfamiliar ode in the future**
 
 - I learned how to make an export of a file, and what files to look at in order to make implementation of new rules. 
 - I have learned how the codebase work, the functions and responsibilities for each file. 
 - Making use of AI when using Prompts makes reading code efficient and easy to work around. 
--
+
