@@ -178,17 +178,110 @@ No validation exists anywhere for status transitions — is that intentional, or
 
 
 ## **Domain model Prompt I used**:
-  -
-  -
 
-- Core entities/models identified:
-  -
+I'd like you to act as a senior developer who deeply understands our codebase's 
+domain model. I'm a junior developer trying to make sense of the business logic 
+and domain concepts in this application.
 
-- Relationships between entities:
-  -
+Here's what I've found in the codebase:
+- Task class (models.py): id, title, description, priority, status, created_at, 
+  updated_at, due_date, completed_at, tags. Has methods mark_as_done() and is_overdue().
+- TaskPriority enum: LOW, MEDIUM, HIGH, URGENT
+- TaskStatus enum: TODO, IN_PROGRESS, REVIEW, DONE
+- task_priority.py: computes a numeric "importance score" from priority weight, 
+  due-date urgency, status, tags, and recency — but this score isn't stored anywhere
+- task_list_merge.py: merges two copies of a Task (local vs remote) for sync, 
+  with DONE status always winning regardless of timestamp
+- task_parser.py: converts shorthand text like "Buy milk @shopping !2 #tomorrow" 
+  into a Task object
 
-- Business rules or constraints encoded in the model:
-  -
+Based on this code, my current understanding is:
+- The system seems to be modeling a personal task-tracking workflow with 
+  priority, status, and deadlines
+- I think Task and TaskStatus are related because status represents where a 
+  task sits in its lifecycle (not started -> active -> reviewed -> finished)
+- The task_priority score appears to represent how urgently a task should be 
+  worked on, but I'm not sure who or what consumes this score since it's 
+  computed but never saved
+- I'm confused about why "DONE always wins" in the merge logic even if the 
+  remote copy has a more recent timestamp — is that intentional business logic 
+  or a bug?
+
+Could you, as a senior developer:
+1. Validate my current understanding, correcting any misconceptions
+2. Help me recognize the core domain concepts represented in this code
+3. Explain the relationships between these entities in business terms, not 
+   just technical relationships
+4. Clarify any domain-specific terminology or patterns I might be missing
+5. Help me connect these models to actual user-facing features or business 
+   processes
+ 
+
+**AI's response**:
+
+*1–2.Validating your understanding + core domain concepts*
+You're mostly right, with one correction. This is a personal task-tracking domain, and TaskStatus does represent lifecycle stage — but it's not strictly linear. Nothing in the code enforces TODO → IN_PROGRESS → REVIEW → DONE in order; a task could jump from TODO straight to DONE, or bounce back from REVIEW to IN_PROGRESS. So think of status as "current state," not "step N of a fixed pipeline," until you decide to add validation.
+
+Core concepts I see: a Task (the unit of work), a priority (business importance, assigned by a human), a status (current lifecycle state), and a separately computed urgency score (derived from priority + due date + status, not stored). Those last two are easy to conflate but they're different concepts: priority is declared, urgency score is calculated.
+
+*3.Relationships in business terms*
+A Task has a priority — a human's judgment of "how important is this," set once and rarely changes.
+A Task has a status — where it currently sits, which changes constantly as work progresses.
+The Task's computed urgency score is a business signal for "what should I work on next," combining the human's priority judgment with objective facts (how close is the deadline, is it already overdue).
+Two copies of a Task can conflict (local vs. remote after being offline), and the merge logic encodes a business rule: completed work is authoritative and shouldn't be "un-done" by a stale remote copy, even if that copy has a later timestamp
+.
+*4.Terminology/patterns you might be missing*
+The "DONE always wins" behavior is very likely intentional, not a bug — it's a common sync pattern called "completion is sticky." The reasoning: if you marked something done on your laptop, then your phone syncs a stale in-progress version from before you finished, you don't want the phone's stale state to resurrect a task you already closed out. This is worth flagging explicitly in a comment if it isn't already, because the next person will have your exact question.
+
+*5.Connecting to user-facing features*
+task_priority's score, though unused today, is exactly what you'd need for a "smart sort" or "what should I do next" feature — it's pre-built infrastructure for a feature that doesn't exist yet in the UI/CLI.
+task_parser's shorthand syntax is what powers quick task creation — a power-user feature.
+task_list_merge is what makes offline-first sync viable — without it, using the app on two devices would silently lose data.
+
+---
+
+I tested my understanding with AI questions.
+
+___
+
+*Diagram to sketch:*
+
+A simple box-and-arrow: Task in the center, with two enum boxes (TaskPriority, TaskStatus) feeding into it, and one box off to the side labeled "computed urgency score" with a dotted arrow (not solid — to signal "derived, not stored") pointing from Task. That dotted vs. solid line is the detail that will help the distinction between "declared data" and "derived data" stick.
+
+
+## **Glossary of domain terms**
+
+*Task Manager — Domain Glossary*
+
+`Task`
+The central entity representing a single unit of work. Holds identity (id), description, a declared priority, a current status, and lifecycle timestamps (created_at, due_date, completed_at).
+
+`Priority`
+A human-assigned judgment of importance, set once and rarely changed. One of LOW, MEDIUM, HIGH, URGENT. Declared, not calculated — it doesn't shift on its own as time passes.
+
+`Status`
+The task's current lifecycle state: TODO, IN_PROGRESS, REVIEW, or DONE. Not enforced as a strict pipeline — nothing stops a task moving out of order (e.g. TODO straight to DONE, or REVIEW back to IN_PROGRESS).
+
+`Urgency score`
+A computed value (from task_priority.py) blending priority, due-date closeness, status, tags, and recency into a single ranking number. Distinct from priority: priority is declared by a person, urgency score is calculated from facts. Currently computed but not stored or surfaced anywhere in the app.
+
+`Overdue`
+A derived condition (Task.is_overdue()): true when a task has a due date in the past and its status is not DONE. A completed task is never considered overdue, regardless of when it was finished.
+
+`Completion-sticky merge`
+The rule in task_list_merge.py that a DONE status always wins during sync, even if the other copy has a more recent timestamp. Prevents a stale "still in progress" copy from undoing work that was already finished elsewhere.
+
+`Tags`
+Free-form labels on a Task, used for categorization/filtering. During merge, tags are unioned (kept from both copies) rather than one side winning.
+
+`Shorthand syntax`
+The mini task-creation language parsed by task_parser.py — e.g. !2 for priority, @shopping for a tag, #tomorrow for a due date — letting a task be created from one line of text instead of a form.
+
+`Facade`
+The architectural role played by task_manager.py: the single entry point that cli.py talks to, which internally delegates to storage, parsing, priority scoring, and merging so that no other module needs to know about those directly.
+
+`Persistence boundary`
+The role played by storage.py — the only place a Task is converted to/from JSON. Nothing else in the codebase reads or writes the task file directly.
 
 ---
 
