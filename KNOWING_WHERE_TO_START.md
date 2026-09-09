@@ -304,8 +304,6 @@ Since this rule is automatic — "should be marked" implies it happens without a
 
 
 -*Reflection*:
-
-
 **The most valuable insights gained from each prompt**
 
 | Prompt | Insight Gained |
@@ -315,7 +313,6 @@ Since this rule is automatic — "should be marked" implies it happens without a
 | Practical Application (abandoned-task rule) | Realized that not every new feature is purely additive like the CSV export was — this rule required modifying an existing enum (TaskStatus) and existing methods (alongside is_overdue()), and exposed a genuine design gap (when/how the rule triggers) that no amount of code-reading alone would resolve — it needed a question for the team. |
 
 **Any strategies you've developed for approaching unfamiliar ode in the future**
-
 - I learned how to make an export of a file, and what files to look at in order to make implementation of new rules. 
 - I have learned how the codebase work, the functions and responsibilities for each file. 
 - Making use of AI when using Prompts makes reading code efficient and easy to work around. 
