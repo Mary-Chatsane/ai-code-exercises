@@ -177,7 +177,7 @@ No validation exists anywhere for status transitions — is that intentional, or
 `task_priority`'s score is never persisted or exposed via CLI — is it dead code, or feeding something not yet built?
 
 
--## **Domain model Prompt I used**:
+## **Domain model Prompt I used**:
   -
   -
 
