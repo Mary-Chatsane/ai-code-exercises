@@ -48,9 +48,9 @@ AI analysis were more sure and reliant on evidence and documents placed before i
 
 ## Exercise Part 2: Finding Feature Implementation
 
-**1.Initial search**
+# **1.Initial search**
 
-I searched the codebase,and this is *what I found in storage.py* (file related functionality that reads and writes task data from a file)
+I searched the codebase, looked into cli.py, models.py, storage.py, task_manager.py, task_parser.py, task_list_merge.py, task_priority.py, and this is *what I found in storage.py* (file related functionality that reads and writes task data from a file)
 
 with open(self.storage_path, 'r') as f:
     tasks_data = json.load(f, cls=TaskDecoder)
@@ -68,7 +68,7 @@ THEREFORE:
 No existing CSV functionality found
 
 
-**2.Hyphothesis**
+# **2.Hyphothesis**
 
 The codebase already has a mechanism for converting task objects into JSON and writing them to an external file. Which means the search might provide a pattern for implementing CSV export. In all the other files I didn't find anything that looked like a file that could have been exported.
 
@@ -76,12 +76,37 @@ I suspect the new CSV export functionality may belong near the existing storage/
 
 -
 
-**3.Feature location Prompt**
+# **3.Feature location Prompt**
 
-  -
-  -
+After using and filling the "finding feature implementation location" with AI, I found that my findings were the same findings that Claude shared and confirmed: there's genuinely no existing export or CSV functionality anywhere in this codebase.
+
+**Filled in prompt**
+
+I need to work on the "Task Export to CSV" feature in this codebase, but I'm not sure where the code for this feature lives.
+
+My approach so far:
+- I searched for keywords like: export, csv, to_csv, download, write_report, file
+- I looked in: cli.py, models.py, storage.py, task_manager.py, task_parser.py, task_list_merge.py, task_priority.py
+- I think the feature might relate to storage.py (file I/O pattern) and cli.py (where a new subcommand would be added)
+
+Project structure:
+task_manager/
+├── cli.py           - argparse CLI, subcommands (create, list, status, priority, due, tag, untag, show, delete, stats)
+├── models.py        - Task, TaskPriority, TaskStatus classes
+├── storage.py       - TaskStorage class, JSON load/save via TaskEncoder/TaskDecoder
+├── task_manager.py  - TaskManager, business logic wrapping TaskStorage
+├── task_parser.py   - parses free-text task strings into Task objects
+├── task_list_merge.py - merges local/remote task lists (sync)
+└── task_priority.py - scoring/sorting tasks by importance
+
+Based on my search, no export functionality currently exists. The most relevant files are:
+- storage.py (TaskEncoder/save() shows the file-writing + serialization pattern)
+- cli.py (would need a new "export" subparser)
+- task_manager.py (would need a new method to bridge cli.py → storage)
 
 - 
+# **4.Documented findings**
+
 
 - 
   -
