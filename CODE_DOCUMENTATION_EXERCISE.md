@@ -117,7 +117,7 @@ def get_next_weekday(current_date, weekday):
 
 ---
 
-## 2.Generated documentation using Claude. Applied AI prompt1: Comprehensive function documentation:
+## 2.Generated documentation using Claude. Applied AI prompt 1: Comprehensive function documentation:
 
 def parse_task_from_text(text):
     """Parse free-form shorthand text into a Task object.
@@ -239,6 +239,6 @@ def get_next_weekday(current_date, weekday):
 
 ---
 
-## Review on the generated documentation 
+## 3.Review on the generated documentation 
 
 This is a really good example of why developers shouldn't blindly trust generated documentation.The generated document identified several things that aren't obvious at first glance, but it also introduced interpretations that weren't completely faithful to the code. As a result, the generated documentation is a useful first draft, but it still needs verification against the actual implementation.
