@@ -301,3 +301,15 @@ for date_str in date_matches:
 if days_ahead <= 0:  # Target day already happened this week
     days_ahead += 7
 
+5. **Suggested improvements (without changing behavior)**
+
+- Extract named constants for the weekday mapping (a dict {'monday': 0, 'mon': 0, ...}) instead of seven near-identical elif blocks — same output, less repetition, easier to extend with new day-name aliases.
+- Add a warning/log (not an exception, to preserve behavior) when multiple priority markers are found, so the silent-discard edge case becomes visible during development rather than only discoverable by code reading.
+- Widen the tag/date regex to allow hyphens ([\w-]+ instead of \w+) if hyphenated tags are actually intended to be supported this would be a behavior change, so it should be flagged as a proposal, not applied silently.
+- Pass extracted fields into Task()'s constructor rather than setting attributes after construction, if the constructor supports it — reduces the risk of Task briefly existing in a partially-initialized state.
+- Return an unparsed-marker list alongside the Task, or log a debug message, whenever a #date marker fails to resolve — currently that failure is completely invisible to both the caller and any log output.
+
+
+---
+
+
