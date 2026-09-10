@@ -273,7 +273,8 @@ This code implements a shorthand parser — it lets a user type a task in one li
 - Tag removal regex has an unescaped-injection risk — re.sub(r'\s@' + tag + r'\b', '', title) inserts the captured tag text directly into a regex pattern. Since \w+ can't capture regex metacharacters, this happens to be safe today, but it's fragile: if the capture pattern were ever loosened, this becomes a regex-injection bug.
 
 4. **Suggested inline comments for complex parts**
-
+   
+```python
 # IMPORTANT:
 # Only the FIRST priority marker found sets the actual priority value.
 # However, ALL priority markers found in the text are stripped from the title.
@@ -352,7 +353,7 @@ for date_str in date_matches:
 if days_ahead <= 0:
     # Target day is today or has already happened this week.
     days_ahead += 7
-
+```
 
 5. **Suggested improvements (without changing behavior)**
 
