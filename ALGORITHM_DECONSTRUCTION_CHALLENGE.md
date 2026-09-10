@@ -6,7 +6,9 @@
 
 **How did the AI’s explanation change your understanding of the algorithm?**
 
-After filling out the prompt, AI highlighted my misunderstandings and corrected my mishaps that only needed little fixing. It explained the whole algorithm into key sections. It explained the calculation behind sorting tasks by priority level.  
+*After filling out the prompt 1: Understand an Algorithm Through Step-by-Step Analysis*
+
+AI highlighted my misunderstandings and corrected my mishaps that only needed little fixing. It explained the whole algorithm into key sections. It explained the calculation behind sorting tasks by priority level.  
 
 it broke down the algorithm into key sections with their purposes, walked me through a simple example execution with concrete values, explained the core technique/pattern being used, and highlighted any non-obvious optimizations or tricks.
 
@@ -21,3 +23,6 @@ The code assigns each task a numerical priority score. It starts with a weighted
 How might you improve the algorithm based on your understanding?
 
 
+*After filling out prompt 2:Decipher Code with Unclear Intent or Poor Documentation*
+
+AI helped decipher code that had unclear intentions with poor naming thst could have been thought through better for the sake of users understanding the function. it identified unclear names like "score" that did not give the score 'range'. leaving it to readers to figure out the score range.
