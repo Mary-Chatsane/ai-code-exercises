@@ -417,4 +417,129 @@ components:
   # --------------------------------------------------------------
 ```
 
+## Applied Prompt 3 to create a developer-friendly usage guide for the endpoint:
 
+# Developer Guide: User Registration Endpoint
+
+`POST /api/users/register`
+
+This guide walks you through registering a new user account via the API — how to authenticate, format your request, handle the response, and troubleshoot common errors.
+
+## 1. Authentication
+
+Good news — you don't need any authentication to call this endpoint. It's public by design, since it's the entry point new users go through to create an account in the first place. No API key, token, or header is required.
+
+## 2. Formatting Your Request
+
+Send a `POST` request with a JSON body containing three required fields:
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `username` | string | Yes | Must not already be taken |
+| `email` | string | Yes | Must be a valid email format; must not already be registered |
+| `password` | string | Yes | Minimum 8 characters |
+
+Set your `Content-Type` header to `application/json` — the server parses the body as JSON and won't understand form-encoded data.
+
+```
+POST /api/users/register
+Content-Type: application/json
+
+{
+  "username": "jane_doe",
+  "email": "jane@example.com",
+  "password": "correcthorsebattery"
+}
+```
+
+**Two things worth knowing before you send:**
+- Email is automatically lowercased on the server, so `Jane@Example.com` and `jane@example.com` are treated as the same account.
+- Username is **not** lowercased — `"Jane"` and `"jane"` can both be registered as separate accounts, so don't assume case-insensitive matching on your end either.
+
+## 3. Handling the Response
+
+On success, you'll get a `201 Created` with the new user's public details:
+
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": 42,
+    "username": "jane_doe",
+    "email": "jane@example.com",
+    "created_at": "2026-09-10T14:32:00.000000",
+    "role": "user"
+  }
+}
+```
+
+Note: the password is never echoed back, even hashed — the `user` object only ever contains public-safe fields.
+
+**One thing to be aware of:** a `201` confirms the account was *created*, but not that the confirmation email was sent. Email delivery happens after the account is saved, and if it fails, the server only logs the error internally — your client won't be told. If your app depends on the user receiving that email, consider polling a "resend confirmation" endpoint (if one exists) or otherwise not assuming delivery from a `201` alone.
+
+## 4. Handling Common Errors
+
+| Status | Error | What It Means | What To Do |
+|---|---|---|---|
+| `400` | `Missing required field` | You forgot `username`, `email`, or `password` | Check your payload has all three keys |
+| `400` | `Invalid email` | Email doesn't match a basic `x@y.z` pattern | Validate email format client-side before sending |
+| `400` | `Weak password` | Password under 8 characters | Enforce an 8-character minimum in your UI |
+| `409` | `Username taken` | Someone already has that username | Prompt the user to pick another |
+| `409` | `Email exists` | An account already uses that email | Suggest logging in or password reset instead |
+| `500` | `Server error` | Something went wrong server-side | Retry once; if it persists, this needs escalation, not a client-side fix |
+
+A practical tip: check for `400`/`409` first in your error handling, since those are usually fixable by the end user themselves (typo, taken username, etc.) — `500` is the only one where retrying blindly might help, and even then, only once.
+
+## 5. Example Code (Python)
+
+```python
+import requests
+
+def register_user(username: str, email: str, password: str) -> dict:
+    """Register a new user account.
+
+    Returns the parsed response body on success or failure — check
+    response.status_code (accessible via the raised exception, if any)
+    to distinguish success from client/server errors.
+    """
+    url = "https://your-api-domain.com/api/users/register"
+    payload = {
+        "username": username,
+        "email": email,
+        "password": password,
+    }
+
+    response = requests.post(url, json=payload)
+
+    if response.status_code == 201:
+        data = response.json()
+        print(f"Registered! User ID: {data['user']['id']}")
+        return data
+
+    elif response.status_code == 400:
+        error = response.json()
+        print(f"Bad request: {error['error']} — {error['message']}")
+
+    elif response.status_code == 409:
+        error = response.json()
+        print(f"Conflict: {error['error']} — {error['message']}")
+
+    elif response.status_code == 500:
+        print("Server error — you may want to retry once, then escalate.")
+
+    else:
+        print(f"Unexpected status code: {response.status_code}")
+
+    return response.json()
+
+
+# Example usage
+if __name__ == "__main__":
+    register_user(
+        username="jane_doe",
+        email="jane@example.com",
+        password="correcthorsebattery"
+    )
+```
+
+**A defensive note for your own client code:** since the server doesn't validate malformed JSON bodies gracefully (a bad body can surface as a `500` instead of a clean `400`), make sure your own code always sends a well-formed JSON object — don't rely on the server to catch a malformed payload for you.
