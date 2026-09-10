@@ -22,10 +22,12 @@ The code assigns each task a numerical priority score. It starts with a weighted
 
 How might you improve the algorithm based on your understanding?
 
+There seems to not be an obvious reason why the algorithm uses fixed, hand-picked numbers (35, 20, 15, 50, etc). Those numbers determine what the system considers “important," yet there's no clear explanation why that is.
+
 
 *After filling out prompt 2:Decipher Code with Unclear Intent or Poor Documentation*
 
-AI helped decipher code that had unclear intentions with poor naming thst could have been thought through better for the sake of users understanding the function. it identified unclear names like "score" that did not give the score 'range'. leaving it to readers to figure out the score range.
+AI helped decipher code that had unclear intentions with poor naming that could have been thought through better for the sake of users understanding the function. it identified unclear names like "score" that did not give the score 'range'. leaving it to readers to figure out the score range.
 
 Claude pointed out that the biggest gap overall is that nothing documents intended range or interpretation of the output — that's the single piece of missing context that would help a reader most, since every other design choice (weights, bonuses, penalties) only makes sense once you know what scale they're meant to produce. and that is something I missed when filling in the prompt. 
 
