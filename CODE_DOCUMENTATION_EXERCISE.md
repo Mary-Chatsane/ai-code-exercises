@@ -274,10 +274,10 @@ This code implements a shorthand parser — it lets a user type a task in one li
 
 4. **Suggested inline comments for complex parts**
 
-# Only the FIRST priority marker sets the actual priority value, but
-# ALL priority markers found in the text are stripped from the title —
-# so "!2 !urgent" silently keeps priority=LOW and discards the "!urgent"
-# override with no warning to the caller.
+#Only the FIRST priority marker sets the actual priority value, but
+#ALL priority markers found in the text are stripped from the title —
+#so "!2 !urgent" silently keeps priority=LOW and discards the "!urgent"
+#override with no warning to the caller.
 priority_matches = re.findall(r'\s!([1-4]|urgent|high|medium|low)\b', text, re.IGNORECASE)
 
 
