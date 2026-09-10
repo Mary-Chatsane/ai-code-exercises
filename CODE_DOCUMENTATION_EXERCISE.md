@@ -281,24 +281,24 @@ This code implements a shorthand parser — it lets a user type a task in one li
 priority_matches = re.findall(r'\s!([1-4]|urgent|high|medium|low)\b', text, re.IGNORECASE)
 
 
-# NOTE: \w+ does not match hyphens or other punctuation, so a tag like
-# "@high-priority" is captured as just "high", leaving "-priority"
-# behind as orphaned text in the title.
+#NOTE: \w+ does not match hyphens or other punctuation, so a tag like
+#"@high-priority" is captured as just "high", leaving "-priority"
+#behind as orphaned text in the title.
 tag_matches = re.findall(r'\s@(\w+)', text)
 
 
-# Multiple #date markers may be present; only the first one that
-# successfully resolves to a real date is used (loop breaks on first
-# match). Any markers that don't match a known keyword or valid
-# YYYY-MM-DD format are still removed from the title, but silently
-# leave due_date unset — no error is surfaced to the caller.
+#Multiple #date markers may be present; only the first one that
+#successfully resolves to a real date is used (loop breaks on first
+#match). Any markers that don't match a known keyword or valid
+#YYYY-MM-DD format are still removed from the title, but silently
+#leave due_date unset — no error is surfaced to the caller.
 for date_str in date_matches:
 
 
-# If the target weekday IS today's weekday, days_ahead becomes 0,
-# which is treated as "already happened this week" — so this jumps
-# forward a full 7 days rather than returning today's date.
-if days_ahead <= 0:  # Target day already happened this week
+#If the target weekday IS today's weekday, days_ahead becomes 0,
+#which is treated as "already happened this week" — so this jumps
+#forward a full 7 days rather than returning today's date.
+if days_ahead <= 0:  #Target day already happened this week
     days_ahead += 7
 
 5. **Suggested improvements (without changing behavior)**
