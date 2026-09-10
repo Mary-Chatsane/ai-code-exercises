@@ -1,6 +1,6 @@
 ## Exercise: Writing Documentation for Complex Code
 
-## 1.Selected code: Task_parser.py
+## Selected code: Task_parser.py
 
 import re
 from datetime import datetime, timedelta
@@ -117,7 +117,7 @@ def get_next_weekday(current_date, weekday):
 
 ---
 
-## 2.Generated documentation using Claude. Applied AI prompt 1: Comprehensive function documentation:
+## Generated documentation using Claude. Applied AI prompt 1: Comprehensive function documentation:
 
 def parse_task_from_text(text):
     """Parse free-form shorthand text into a Task object.
@@ -239,6 +239,65 @@ def get_next_weekday(current_date, weekday):
 
 ---
 
-## 3.Review on the generated documentation 
+## Review on the generated documentation 
 
 This is a really good example of why developers shouldn't blindly trust generated documentation.The generated document identified several things that aren't obvious at first glance, but it also introduced interpretations that weren't completely faithful to the code. As a result, the generated documentation is a useful first draft, but it still needs verification against the actual implementation.
+
+---
+
+## Tried Prompt 2 to get a different perspective on the code’s intent and logic: 
+
+1. **High-level intent**
+
+This code implements a shorthand parser — it lets a user type a task in one line of natural-sounding text with embedded markers, instead of filling out separate fields for title/priority/tags/due-date. It's a convenience layer: parse_task_from_text() takes that one string and produces a fully-formed Task object, stripping the markers out so the leftover text becomes a clean title. get_next_weekday() is a small helper used only for resolving weekday-name markers (#monday, #fri, etc.) into actual dates.
+
+2. **Step-by-step logic breakdown**
+
+1. *Initialize defaults* — title starts as the full trimmed text; priority defaults to MEDIUM; due_date defaults to None; tags starts empty. Everything below only overrides these defaults if a marker is found.
+2. *Priority extraction* — regex finds all !N or !name markers. Only the first match sets the priority (via priority_matches[0]), but the re.sub call removes every matching marker from the title, not just the first.
+3. *Priority conversion* — a manual if/elif chain maps the matched text (already lowercased) to a TaskPriority enum value.
+4. *Tag extraction* — regex finds all @word markers, capturing only \w+ (letters/digits/underscore — no hyphens or other punctuation). All matched tags are kept, and each is individually stripped from the title via its own re.sub call.
+5. *Date extraction* — regex finds all #word markers, strips all of them from the title first, then loops through them trying to resolve one into an actual date, stopping (break) at the first one that resolves successfully — via keyword match (today/tomorrow/next_week/weekday names) or by falling through to a YYYY-MM-DD parse attempt.
+6. *Whitespace cleanup* — collapses any double spaces left behind by marker removal and trims the ends.
+7. *Task construction* — builds a Task with the extracted title, then sets priority, due_date, and tags as attributes after construction rather than passing them into the constructor.
+8. *get_next_weekday* — given a reference date and a target weekday number (0=Monday), computes how many days until that weekday next occurs; if the calculation lands on 0 or negative (i.e., today already is that weekday, or it already passed this week), it jumps forward a full week instead.
+
+3. **Assumptions and edge cases**
+
+- Assumes exactly one priority is intended, but doesn't enforce it — multiple ! markers are all stripped from the title, yet only the first sets the actual priority, silently discarding any conflicting override with no warning.
+- Assumes tags are alphanumeric only — \w+ can't capture hyphens, so @high-priority becomes tag "high" with "-priority" left orphaned in the title (confirmed by manual trace).
+- Assumes markers are preceded by whitespace — every regex uses \s@, \s!, \s#, so a marker glued to the start of the string ("@tag rest" — no leading space) or squished against another marker ("text!2@tag") won't be detected.
+- Assumes "today" for a requested weekday means next week, not today — get_next_weekday treats days_ahead == 0 (target weekday is today) the same as "already passed," bumping to +7 days. This may not match user expectation if they type #friday on a Friday.
+- Silently swallows invalid dates — if a #date marker doesn't match any keyword and fails YYYY-MM-DD parsing, it's still stripped from the title, but due_date stays None with zero indication to the caller that something was wrong.
+- No validation on empty results — if the entire input is just markers (e.g. "!2 #tomorrow"), the resulting title is an empty string, and there's no guard or error for that.
+- Tag removal regex has an unescaped-injection risk — re.sub(r'\s@' + tag + r'\b', '', title) inserts the captured tag text directly into a regex pattern. Since \w+ can't capture regex metacharacters, this happens to be safe today, but it's fragile: if the capture pattern were ever loosened, this becomes a regex-injection bug.
+
+4. **Suggested inline comments for complex parts**
+
+# Only the FIRST priority marker sets the actual priority value, but
+# ALL priority markers found in the text are stripped from the title —
+# so "!2 !urgent" silently keeps priority=LOW and discards the "!urgent"
+# override with no warning to the caller.
+priority_matches = re.findall(r'\s!([1-4]|urgent|high|medium|low)\b', text, re.IGNORECASE)
+
+
+# NOTE: \w+ does not match hyphens or other punctuation, so a tag like
+# "@high-priority" is captured as just "high", leaving "-priority"
+# behind as orphaned text in the title.
+tag_matches = re.findall(r'\s@(\w+)', text)
+
+
+# Multiple #date markers may be present; only the first one that
+# successfully resolves to a real date is used (loop breaks on first
+# match). Any markers that don't match a known keyword or valid
+# YYYY-MM-DD format are still removed from the title, but silently
+# leave due_date unset — no error is surfaced to the caller.
+for date_str in date_matches:
+
+
+# If the target weekday IS today's weekday, days_ahead becomes 0,
+# which is treated as "already happened this week" — so this jumps
+# forward a full 7 days rather than returning today's date.
+if days_ahead <= 0:  # Target day already happened this week
+    days_ahead += 7
+
