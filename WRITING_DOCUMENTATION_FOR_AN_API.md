@@ -95,3 +95,117 @@ def register_user():
         }), 500
 ```
 
+## Applied Prompt 1 to generate comprehensive endpoint documentation:
+
+
+# User Registration
+
+**`POST /api/users/register`**
+
+## 1. Purpose
+Creates a new user account. Validates required fields, checks for duplicate username/email, validates email format and password strength, hashes the password, persists the user, and attempts to send a confirmation email (non-blocking — registration still succeeds even if the email fails).
+
+## 2. Request
+
+**Authentication:** None required — this is a public, unauthenticated endpoint (it's how new users obtain an account in the first place).
+
+**Body parameters (JSON):**
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `username` | string | Yes | Desired username. Must not already exist. |
+| `email` | string | Yes | Email address. Must match a basic pattern (`text@text.text`) and must not already exist. Stored lowercased. |
+| `password` | string | Yes | Plaintext password, minimum 8 characters. Hashed before storage; never stored or returned in plaintext. |
+
+No path or query parameters.
+
+## 3. Response Format
+
+**Success — `201 Created`**
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": 42,
+    "username": "jane_doe",
+    "email": "jane@example.com",
+    "created_at": "2026-09-10T14:32:00.000000",
+    "role": "user"
+  }
+}
+```
+Note: `password`/`password_hash` are deliberately excluded from the response.
+
+## 4. Error Responses
+
+| Status | Error | Trigger |
+|---|---|---|
+| `400` | `Missing required field` | One of `username`, `email`, `password` absent from the request body |
+| `400` | `Invalid email` | Email fails the regex `^[^@]+@[^@]+\.[^@]+$` |
+| `400` | `Weak password` | Password under 8 characters |
+| `409` | `Username taken` | Username already exists in DB |
+| `409` | `Email exists` | Email already exists in DB |
+| `500` | `Server error` | Any exception during user creation/commit (DB error, etc.) — transaction is rolled back |
+
+## 5. Example Requests
+
+**Example 1 — Success**
+
+Request:
+```
+POST /api/users/register
+Content-Type: application/json
+
+{
+  "username": "jane_doe",
+  "email": "Jane@Example.com",
+  "password": "correcthorsebattery"
+}
+```
+
+Response `201`:
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": 42,
+    "username": "jane_doe",
+    "email": "jane@example.com",
+    "created_at": "2026-09-10T14:32:00.000000",
+    "role": "user"
+  }
+}
+```
+(Note: email is lowercased on storage — `Jane@Example.com` → `jane@example.com`.)
+
+**Example 2 — Duplicate email**
+
+Request:
+```
+POST /api/users/register
+Content-Type: application/json
+
+{
+  "username": "jane_doe2",
+  "email": "jane@example.com",
+  "password": "anotherpassword123"
+}
+```
+
+Response `409`:
+```json
+{
+  "error": "Email exists",
+  "message": "An account with this email already exists"
+}
+```
+
+## 6. Special Considerations / Gaps
+
+- **No rate limiting** is implemented in this code — nothing prevents automated/bulk account creation. Worth confirming whether this is handled at a gateway/proxy layer, or is a genuine gap.
+- **`data = request.get_json()` has no null/malformed-JSON check** — if the request body isn't valid JSON, `data` could be `None`, and the next line (`if field not in data`) would raise a `TypeError` instead of returning a clean `400`, likely surfacing as a `500`.
+- **Email confirmation is fire-and-forget** — if `send_confirmation_email` fails, the error is only logged; the client still gets a `201` with no indication the confirmation email didn't send.
+- **Case sensitivity is inconsistent**: email is lowercased before storage/duplicate-checking, but `username` is not — `"Jane"` and `"jane"` could be registered as distinct usernames.
+- **New accounts default to `role='user'`** hardcoded — there's no path in this endpoint for creating an admin account.
+
+
