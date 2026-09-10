@@ -113,7 +113,7 @@ register_job("config/example_scraper.yaml")
 ## Project Structure
 
 ```
-/scrapemaster           - Main package
+/scrapemaster            - Main package
 /scrapemaster/scrapers   - Scraper definitions
 /scrapemaster/extractors - Data extraction tools (CSS/XPath)
 /scrapemaster/processors - Data processing pipelines
@@ -186,6 +186,7 @@ Claude pointed out that: the technologies listed (Scrapy, BeautifulSoup, SQLAlch
 ---
 
 ## Applied Prompt 2 to create a step-by-step guide for one of the project’s features:
+
 
 
 
