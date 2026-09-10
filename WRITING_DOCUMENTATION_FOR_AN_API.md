@@ -211,7 +211,7 @@ Response `409`:
 
 ## Applied Prompt 2 to convert the documentation to a different format: OpenAPI/Swagger 
 
-
+```
 openapi: 3.0.3
 info:
   title: User Registration API
@@ -415,7 +415,6 @@ components:
   # - Email is lowercased before storage/duplicate-checking; username
   #   is not — "Jane" and "jane" can coexist as distinct usernames.
   # --------------------------------------------------------------
-
-
+```
 
 
