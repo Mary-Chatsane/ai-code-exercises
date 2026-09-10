@@ -1,12 +1,14 @@
 # Using AI to comprehend existing codebases
 ---
-## Exercise: Algorithm Deconstruction Challenge - Task Priority(python)
+## Exercise: Algorithm Deconstruction Challenge - Task priority sorting and filtering algorithm(python)
 
 **Reflection Questions**
 
 **How did the AI’s explanation change your understanding of the algorithm?**
 
 After filling out the prompt, AI highlighted my misunderstandings and corrected my mishaps that only needed little fixing. It explained the whole algorithm into key sections. It explained the calculation behind sorting tasks by priority level.  
+
+it broke down the algorithm into key sections with their purposes, walked me through a simple example execution with concrete values, explained the core technique/pattern being used, and highlighted any non-obvious optimizations or tricks.
 
 **What aspects were still difficult to understand after AI explanation?**
 The task calculation with python, and how priority levels do mean urgent is automatically mean "highest than the other levels when calculated
