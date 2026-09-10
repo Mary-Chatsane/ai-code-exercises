@@ -6,7 +6,7 @@
 
 **How did the AI’s explanation change your understanding of the algorithm?**
 
-*After filling out the prompt 1: Understand an Algorithm Through Step-by-Step Analysis*
+## *After filling out the prompt 1: Understand an Algorithm Through Step-by-Step Analysis*
 
 AI highlighted my misunderstandings and corrected my mishaps that only needed little fixing. It explained the whole algorithm into key sections. It explained the calculation behind sorting tasks by priority level.  
 
@@ -25,7 +25,7 @@ How might you improve the algorithm based on your understanding?
 There seems to not be an obvious reason why the algorithm uses fixed, hand-picked numbers (35, 20, 15, 50, etc). Those numbers determine what the system considers “important," yet there's no clear explanation why that is.
 
 
-*After filling out prompt 2:Decipher Code with Unclear Intent or Poor Documentation*
+## *After filling out prompt 2:Decipher Code with Unclear Intent or Poor Documentation*
 
 AI helped decipher code that had unclear intentions with poor naming that could have been thought through better for the sake of users understanding the function. it identified unclear names like "score" that did not give the score 'range'. leaving it to readers to figure out the score range.
 
@@ -38,3 +38,11 @@ another sparse comment was that there is no comment explaining the tag boost's m
 Also, no comment on why reverse=True combined with tuple sorting is safe — given the latent tie-breaking bug we found earlier (if two tasks have equal scores, Python falls back to comparing Task objects directly), a comment flagging "assumes no two tasks ever tie, or that Task supports comparison" would have surfaced that risk before it becomes a hidden crash.
 
 As a result, I learnt the importance of good documentation with clear intent. The use of prompt, questioning and answering questions with AI clears out misunderstandings in functions, and also compels AI to answer questions posed toward it with reason and evidence. 
+
+## *After filling out Prompt 3: Understand Complex Logic and Control Flow*
+
+My current understanding of the control flow from what I learnt and from my interaction with AI is that: 
+The function starts with a base score from priority (weight × 10), then goes through five separate if-blocks in sequence, each one independently adding to or subtracting from the same score variable: a due-date bonus (with its own nested 4-way branch inside it), a status penalty, a tag-based bonus, and a 
+recency bonus. There's only one level of real nesting due-date thresholds inside the due_date check) — the rest are flat sequential conditionals stacked one after another, not nested inside each other.
+
+There aren't any explicit nested loops in the provided algorithm.There are separate iterations over tasks and tags, but they aren't written as one loop directly inside another.
