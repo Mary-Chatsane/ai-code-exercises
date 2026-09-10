@@ -209,3 +209,213 @@ Response `409`:
 - **New accounts default to `role='user'`** hardcoded — there's no path in this endpoint for creating an admin account.
 
 
+## Applied Prompt 2 to convert the documentation to a different format: OpenAPI/Swagger 
+
+
+openapi: 3.0.3
+info:
+  title: User Registration API
+  description: >
+    Creates a new user account. Validates required fields, checks for
+    duplicate username/email, validates email format and password
+    strength, hashes the password, persists the user, and attempts to
+    send a confirmation email (non-blocking — registration still
+    succeeds even if the email fails).
+  version: "1.0.0"
+
+paths:
+  /api/users/register:
+    post:
+      summary: Register a new user
+      description: >
+        Public, unauthenticated endpoint for creating a new user account.
+      operationId: registerUser
+      security: []   # No authentication required
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              success:
+                summary: Valid registration request
+                value:
+                  username: jane_doe
+                  email: Jane@Example.com
+                  password: correcthorsebattery
+              duplicateEmail:
+                summary: Request that triggers a duplicate-email error
+                value:
+                  username: jane_doe2
+                  email: jane@example.com
+                  password: anotherpassword123
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterSuccessResponse'
+              examples:
+                success:
+                  summary: Successful registration
+                  value:
+                    message: User registered successfully
+                    user:
+                      id: 42
+                      username: jane_doe
+                      email: jane@example.com
+                      created_at: "2026-09-10T14:32:00.000000"
+                      role: user
+        '400':
+          description: >
+            Bad request — missing required field, invalid email format,
+            or password too short.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingField:
+                  summary: Missing required field
+                  value:
+                    error: Missing required field
+                    message: "email is required"
+                invalidEmail:
+                  summary: Invalid email format
+                  value:
+                    error: Invalid email
+                    message: Please provide a valid email address
+                weakPassword:
+                  summary: Password too short
+                  value:
+                    error: Weak password
+                    message: Password must be at least 8 characters long
+        '409':
+          description: >
+            Conflict — username or email already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                usernameTaken:
+                  summary: Username already exists
+                  value:
+                    error: Username taken
+                    message: Username is already in use
+                emailExists:
+                  summary: Email already registered
+                  value:
+                    error: Email exists
+                    message: An account with this email already exists
+        '500':
+          description: >
+            Server error — an unexpected exception occurred while
+            creating the user; the transaction is rolled back.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  summary: Unexpected server error
+                  value:
+                    error: Server error
+                    message: Failed to register user
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          description: Desired username. Must not already exist. Case-sensitivity is NOT normalized on the server.
+          example: jane_doe
+        email:
+          type: string
+          format: email
+          description: >
+            Email address. Must match pattern ^[^@]+@[^@]+\.[^@]+$.
+            Must not already exist. Stored lowercased regardless of
+            input casing.
+          example: Jane@Example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          description: >
+            Plaintext password, minimum 8 characters. Hashed before
+            storage; never stored or returned in plaintext.
+          example: correcthorsebattery
+
+    RegisterSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User registered successfully
+        user:
+          $ref: '#/components/schemas/UserPublic'
+
+    UserPublic:
+      type: object
+      description: >
+        Public representation of a user. Deliberately excludes
+        password/password_hash.
+      properties:
+        id:
+          type: integer
+          example: 42
+        username:
+          type: string
+          example: jane_doe
+        email:
+          type: string
+          format: email
+          example: jane@example.com
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-09-10T14:32:00.000000"
+        role:
+          type: string
+          description: Hardcoded to "user" at registration; no admin-creation path exists on this endpoint.
+          example: user
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Short machine-referenceable error label.
+          example: Invalid email
+        message:
+          type: string
+          description: Human-readable explanation of the error.
+          example: Please provide a valid email address
+
+  # ---------------------------------------------------------------
+  # Known gaps / considerations not expressible in the OpenAPI schema
+  # itself — kept here as documentation for maintainers:
+  #
+  # - No rate limiting is defined or implemented; nothing in the spec
+  #   or the underlying code prevents automated/bulk registration.
+  # - request.get_json() has no null/malformed-JSON guard server-side;
+  #   a malformed body may surface as a 500 rather than a 400.
+  # - Confirmation email sending is fire-and-forget; failures are
+  #   logged server-side only and do not affect the 201 response or
+  #   appear in this spec's response schema.
+  # - Email is lowercased before storage/duplicate-checking; username
+  #   is not — "Jane" and "jane" can coexist as distinct usernames.
+  # --------------------------------------------------------------
+
+
+
+
