@@ -274,32 +274,85 @@ This code implements a shorthand parser — it lets a user type a task in one li
 
 4. **Suggested inline comments for complex parts**
 
-#Only the FIRST priority marker sets the actual priority value, but
-#ALL priority markers found in the text are stripped from the title —
-#so "!2 !urgent" silently keeps priority=LOW and discards the "!urgent"
-#override with no warning to the caller.
-priority_matches = re.findall(r'\s!([1-4]|urgent|high|medium|low)\b', text, re.IGNORECASE)
+# IMPORTANT:
+# Only the FIRST priority marker found sets the actual priority value.
+# However, ALL priority markers found in the text are stripped from the title.
+#
+# Example:
+#     "!2 !urgent"
+#
+# The first marker (!2) sets the priority to MEDIUM.
+# The second marker (!urgent) is also removed from the title,
+# but it does NOT override the first priority.
+# There is no warning to the caller about the second marker.
+#
+# Code:
+priority_matches = re.findall(
+    r'\s!([1-4]|urgent|high|medium|low)\b',
+    text,
+    re.IGNORECASE
+)
 
 
-#NOTE: \w+ does not match hyphens or other punctuation, so a tag like
-#"@high-priority" is captured as just "high", leaving "-priority"
-#behind as orphaned text in the title.
+# IMPORTANT:
+# \w+ does not match hyphens or other punctuation.
+# Therefore, a tag such as "@high-priority" is only captured as "high".
+#
+# This means:
+#     tags = ["high"]
+#
+# and "-priority" is left behind in the title as orphaned text.
+#
+# Code:
 tag_matches = re.findall(r'\s@(\w+)', text)
 
 
-#Multiple #date markers may be present; only the first one that
-#successfully resolves to a real date is used (loop breaks on first
-#match). Any markers that don't match a known keyword or valid
-#YYYY-MM-DD format are still removed from the title, but silently
-#leave due_date unset — no error is surfaced to the caller.
+# IMPORTANT:
+# Multiple #date markers can be present.
+# The function checks each date marker in order and uses ONLY the FIRST
+# one that successfully resolves to a valid date.
+#
+# If a date marker is not recognized and cannot be parsed as YYYY-MM-DD,
+# it is still removed from the title.
+#
+# The invalid date does NOT produce an error.
+# Instead, due_date remains None unless another date marker successfully
+# resolves to a date.
+#
+# Example:
+#     "Finish report #nextmonth #friday"
+#
+# #nextmonth is not recognized, so it is ignored for the due date.
+# The function then checks #friday and, if valid, uses that date.
+#
+# Code:
 for date_str in date_matches:
 
 
-`#If the target weekday IS today's weekday, days_ahead becomes 0,
-#which is treated as "already happened this week" — so this jumps
-#forward a full 7 days rather than returning today's date.
-if days_ahead <= 0:  #Target day already happened this week
-    days_ahead += 7`
+# IMPORTANT:
+# If the target weekday is the SAME as today's weekday,
+# days_ahead becomes 0.
+#
+# Because the condition uses <= 0, 0 is treated the same as a weekday
+# that has already happened this week.
+#
+# Therefore, requesting today's weekday jumps forward by 7 days
+# instead of returning today's date.
+#
+# Example:
+#     If today is Thursday and weekday = 3 (Thursday),
+#     days_ahead = 3 - 3 = 0
+#
+#     Since 0 <= 0:
+#         days_ahead += 7
+#
+#     The result is NEXT Thursday.
+#
+# Code:
+if days_ahead <= 0:
+    # Target day is today or has already happened this week.
+    days_ahead += 7
+
 
 5. **Suggested improvements (without changing behavior)**
 
