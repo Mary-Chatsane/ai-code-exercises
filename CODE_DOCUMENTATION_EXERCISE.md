@@ -295,11 +295,11 @@ tag_matches = re.findall(r'\s@(\w+)', text)
 for date_str in date_matches:
 
 
-#If the target weekday IS today's weekday, days_ahead becomes 0,
+`#If the target weekday IS today's weekday, days_ahead becomes 0,
 #which is treated as "already happened this week" — so this jumps
 #forward a full 7 days rather than returning today's date.
 if days_ahead <= 0:  #Target day already happened this week
-    days_ahead += 7
+    days_ahead += 7`
 
 5. **Suggested improvements (without changing behavior)**
 
