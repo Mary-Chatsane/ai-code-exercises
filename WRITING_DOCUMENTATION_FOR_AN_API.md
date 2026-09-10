@@ -543,3 +543,9 @@ if __name__ == "__main__":
 ```
 
 **A defensive note for your own client code:** since the server doesn't validate malformed JSON bodies gracefully (a bad body can surface as a `500` instead of a clean `400`), make sure your own code always sends a well-formed JSON object — don't rely on the server to catch a malformed payload for you.
+
+
+---
+**Reflection**
+
+After prompt implementations and adjustments, I found the Markdown documentation format most effective for your API as a beginner in programming. Overall, I am excited that I have learned so much form using AI Prompts. I now have new ways to incorporate such into my future workflow and creativity using AI.
