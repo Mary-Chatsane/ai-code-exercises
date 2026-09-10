@@ -253,14 +253,14 @@ This code implements a shorthand parser — it lets a user type a task in one li
 
 2. **Step-by-step logic breakdown**
 
-1. *Initialize defaults* — title starts as the full trimmed text; priority defaults to MEDIUM; due_date defaults to None; tags starts empty. Everything below only overrides these defaults if a marker is found.
-2. *Priority extraction* — regex finds all !N or !name markers. Only the first match sets the priority (via priority_matches[0]), but the re.sub call removes every matching marker from the title, not just the first.
-3. *Priority conversion* — a manual if/elif chain maps the matched text (already lowercased) to a TaskPriority enum value.
-4. *Tag extraction* — regex finds all @word markers, capturing only \w+ (letters/digits/underscore — no hyphens or other punctuation). All matched tags are kept, and each is individually stripped from the title via its own re.sub call.
-5. *Date extraction* — regex finds all #word markers, strips all of them from the title first, then loops through them trying to resolve one into an actual date, stopping (break) at the first one that resolves successfully — via keyword match (today/tomorrow/next_week/weekday names) or by falling through to a YYYY-MM-DD parse attempt.
-6. *Whitespace cleanup* — collapses any double spaces left behind by marker removal and trims the ends.
-7. *Task construction* — builds a Task with the extracted title, then sets priority, due_date, and tags as attributes after construction rather than passing them into the constructor.
-8. *get_next_weekday* — given a reference date and a target weekday number (0=Monday), computes how many days until that weekday next occurs; if the calculation lands on 0 or negative (i.e., today already is that weekday, or it already passed this week), it jumps forward a full week instead.
+- *Initialize defaults* — title starts as the full trimmed text; priority defaults to MEDIUM; due_date defaults to None; tags starts empty. Everything below only overrides these defaults if a marker is found.
+- *Priority extraction* — regex finds all !N or !name markers. Only the first match sets the priority (via priority_matches[0]), but the re.sub call removes every matching marker from the title, not just the first.
+- *Priority conversion* — a manual if/elif chain maps the matched text (already lowercased) to a TaskPriority enum value.
+- *Tag extraction* — regex finds all @word markers, capturing only \w+ (letters/digits/underscore — no hyphens or other punctuation). All matched tags are kept, and each is individually stripped from the title via its own re.sub call.
+- *Date extraction* — regex finds all #word markers, strips all of them from the title first, then loops through them trying to resolve one into an actual date, stopping (break) at the first one that resolves successfully — via keyword match (today/tomorrow/next_week/weekday names) or by falling through to a YYYY-MM-DD parse attempt.
+- *Whitespace cleanup* — collapses any double spaces left behind by marker removal and trims the ends.
+- *Task construction* — builds a Task with the extracted title, then sets priority, due_date, and tags as attributes after construction rather than passing them into the constructor.
+- *get_next_weekday* — given a reference date and a target weekday number (0=Monday), computes how many days until that weekday next occurs; if the calculation lands on 0 or negative (i.e., today already is that weekday, or it already passed this week), it jumps forward a full week instead.
 
 3. **Assumptions and edge cases**
 
