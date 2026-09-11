@@ -185,7 +185,7 @@ if __name__ == "__main__":
     print(f"Execution time: {end_time - start_time:.2f} seconds")
 ```
 
-**Performance Comparison: Before vs. After Optimization**
+**Measured performance Comparison: Before vs. After Optimization**
 
 | Metric | Before (Original) | After (Optimized) |
 |---|---|---|
