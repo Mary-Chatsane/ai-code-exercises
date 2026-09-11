@@ -1,4 +1,4 @@
-## Exercise: Performance Optimization Challenge
+2## Exercise: Performance Optimization Challenge
 ## Slow Code Analysis  (python)
 
 **Applied Prompt 1: slow code analysis**
@@ -199,5 +199,7 @@ if __name__ == "__main__":
 | **Scalability** | Gets dramatically worse as product count grows (quadratic+) | Scales much more gracefully as product count grows |
 
 
+**key learnings**
 
+For a code to work, there must always be proper planning and structuring, as well as testing. it takes mistakes and getting it right to finally learn and know how to. With AI, there's more efficiently and learning through the use of Prompts, and all round questions and answers. 
 
