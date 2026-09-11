@@ -52,7 +52,7 @@ def find_product_combinations(products, target_price, price_margin=10):
     results.sort(key=lambda x: x['price_difference'])
     return results
 
-# Example usage
+ #Example usage
 if __name__ == "__main__":
     import time
     import random
@@ -92,4 +92,19 @@ I'm particularly interested in learning the underlying performance concepts, not
 
 ---
 **Suggested optimization**
+
+*why there's slow performance* 
+
+There's comparison of every product against every other product — with 5,000 products, that's roughly 25 million comparisons (5,000 × 5,000). That volume alone would be slow in Python, but there's a second, hidden cost stacked on top: for every pair that does match, scanning through the entire results list so far to check if it's already added the reverse pair. As the results list grows, each of those checks gets slower — so the slowdown compounds as the function runs, not just stays constant.
+
+Fix 1 — stop checking pairs twice (removes the need for duplicate-checking entirely).This alone removes the expensive any() scan completely, since each pair is now only ever considered once. This should give a significant speedup on its own.
+
+Fix 2 — the bigger structural change: sort first, then use two pointers. This is the real algorithmic improvement, going from "compare everything to everything" (O(n²)) down to "sort once, then scan in one pass" (O(n log n))
+
+**Implementing optimization**
+
+**results after Claude implemented the above:**
+
+
+
 
