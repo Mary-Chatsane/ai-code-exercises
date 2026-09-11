@@ -201,5 +201,5 @@ if __name__ == "__main__":
 
 **key learnings**
 
-For a code to work, there must always be proper planning and structuring, as well as testing. it takes mistakes and getting it right to finally learn and know how to. With AI, there's more efficiently and learning through the use of Prompts, and all round questions and answers. 
+For a code to work, there must always be proper planning and structuring, as well as testing. it takes mistakes and getting it right to finally learn and know how to. With AI, there's more efficiency and learning through the use of Prompts, and all round questions and answers. 
 
