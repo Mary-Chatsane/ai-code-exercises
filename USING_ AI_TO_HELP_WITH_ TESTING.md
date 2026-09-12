@@ -1,4 +1,7 @@
 ## Exercise: Learning how to test code with AI
+**Part 1: Understanding What to Test**
+**Exercise 1.1: Behavior Analysis*
+
 **Five listed cases built through conversation with AI**
 
 ## Test Plan: `calculate_task_score`
@@ -50,4 +53,17 @@ Test these only once each contributing factor is independently verified — a fa
 - Task is both overdue **and** marked DONE — confirm the DONE penalty behaves sensibly against the overdue bonus
 - Task has URGENT priority **and** an "urgent" tag — confirm both bonuses stack independently rather than double-counting or conflicting
 
+**Exercise 1.2: Test Planning**
+
+**Priority of test cases**
+
+
+
+**Types of tests needed (unit, integration)**
+
+
+**Test dependencies**
+
+
+**Expected outcomes for each test**
 
