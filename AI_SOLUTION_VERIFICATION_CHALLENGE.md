@@ -182,6 +182,7 @@ No `i`/`j` variables exist at all — the base cases (`left.length === 0`, `righ
 
 **Comparing All Approaches**
 
+
 | | **Original (fixed)** | **A: concat/slice** | **B: unified loop** | **C: recursive** |
 |---|---|---|---|---|
 | **Performance** | O(n) time, O(n) space | O(n) time, but `.slice()`/`.concat()` create intermediate arrays — slightly more memory churn than in-place pushing | O(n) time, O(n) space — same efficiency as original, single pass | O(n) time, but O(n) call stack depth too — risks stack overflow on very large arrays (tens of thousands+ elements), and `[x, ...merge(...)]` creates a new array at every recursive call, which is more memory-expensive than it looks |
