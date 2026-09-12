@@ -191,5 +191,9 @@ No `i`/`j` variables exist at all — the base cases (`left.length === 0`, `righ
 | **Scalability for future changes** | If you needed to add custom logic per side (e.g. logging), the current 3-loop shape makes that easy to slot in | Slightly harder to inject custom per-element logic since `.slice()`/`.concat()` hide the iteration | Adding custom logic means threading it through the single denser condition — a bit trickier | Adding logic per side is straightforward (just modify the relevant recursive branch), but performance cost compounds with array size |
 | **When it shines** | When you want the smallest possible diff/fix and the team already understands loop-based merges | When you value simplicity and want to minimize surface area for future bugs | When performance is critical and every branch/array-allocation matters (avoids `.slice()` allocation overhead) | Small-to-medium arrays, or when working in a very functional/immutable codebase style |
 
+## Developing a Cvritical Eye
+**Prompt 3: Developing a Critical Eye**
+
+
 
 
