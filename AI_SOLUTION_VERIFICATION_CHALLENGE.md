@@ -180,7 +180,7 @@ function merge(left, right) {
 
 No `i`/`j` variables exist at all — the base cases (`left.length === 0`, `right.length === 0`) handle what the cleanup loops used to do. This makes the "leftover" bug structurally impossible, since there's no manual index tracking to get wrong.
 
-**Comparing All Approaches(*
+**Comparing All Approaches**
 
 | | **Original (fixed)** | **A: concat/slice** | **B: unified loop** | **C: recursive** |
 |---|---|---|---|---|
