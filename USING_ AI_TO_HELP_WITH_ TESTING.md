@@ -53,6 +53,7 @@ Test these only once each contributing factor is independently verified — a fa
 - Task is both overdue **and** marked DONE — confirm the DONE penalty behaves sensibly against the overdue bonus
 - Task has URGENT priority **and** an "urgent" tag — confirm both bonuses stack independently rather than double-counting or conflicting
 
+
 **Exercise 1.2: Test Planning**
 
 ## Test Plan: Task Scoring & Sorting Functions
