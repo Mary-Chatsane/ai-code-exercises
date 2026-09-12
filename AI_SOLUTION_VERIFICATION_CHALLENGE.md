@@ -194,6 +194,41 @@ No `i`/`j` variables exist at all — the base cases (`left.length === 0`, `righ
 ## Developing a Cvritical Eye
 **Prompt 3: Developing a Critical Eye**
 
+Applied the prompt and concluded that the solution has been verified with options of how the bug would be fixed at a large codebase, with different approaches that have been given. I went through with AI as to what could possibly go wrong with if the input data changed or if there were indicated values. So we revealed more verification options for depth sake, otherwise the original one-character fix (j++ → i++) from the bug was already fully correct. As a result, here's the final version below. Taking only the improvements that meaningfully reduce risk, and skipping the ones that add complexity without clear payoff (no comparator parameter, no elaborate validation).
+
+
+function mergeSort(arr) {
+  if (arr.length <= 1) return arr;
+
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+
+  return merge(left, right);
+}
+
+// Precondition: left and right must already be sorted ascending.
+// merge() interleaves two pre-sorted arrays — it does not sort them.
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+
+  // Append whatever's left over from either side — no loop needed,
+  // so there's no index variable left to typo.
+  return result.concat(left.slice(i)).concat(right.slice(j));
+}
+
 
 
 
