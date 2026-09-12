@@ -55,15 +55,68 @@ Test these only once each contributing factor is independently verified — a fa
 
 **Exercise 1.2: Test Planning**
 
-**Priority of test cases**
+## Test Plan: Task Scoring & Sorting Functions
 
+Each test case below is labeled with: **Priority**, **Test Type**, **Dependencies**, and **Expected Outcome**.
 
+## Priority 1 — `calculate_task_score`
+*(Foundation — `sort_tasks_by_importance` and `get_top_priority_tasks` both depend on this function's correctness, so it must be verified first and in isolation.)*
 
-**Types of tests needed (unit, integration)**
+**Type: Unit test** for all cases below — this function has no dependency on other functions in the module, only on `TaskPriority`/`TaskStatus` enums and a `task` object's attributes.
 
+**Dependencies:** None on other functions. Requires a mock/stub `task` object (or real `Task` instance) with controllable `priority`, `due_date`, `status`, `tags`, `updated_at`.
 
-**Test dependencies**
+| Test Case | Priority | Expected Outcome |
+|---|---|---|
+| Base case: MEDIUM priority, no due date, no tags, not recently updated, TODO | High | Score = 20 (2 × 10), no bonuses/penalties applied |
+| LOW / MEDIUM / HIGH / URGENT priority in isolation | High | Scores of 10 / 20 / 40 / 60 respectively (all other factors neutral) |
+| days_until_due = -1 | High | +35 applied |
+| days_until_due = 0 | High | +20 applied |
+| days_until_due = 1 | High | No "due today" bonus; falls into "next 2 days" bucket instead, +15 |
+| days_until_due = 2 | High | +15 applied |
+| days_until_due = 3 | High | Drops to "next week" bucket, +10 applied |
+| days_until_due = 7 | High | +10 applied |
+| days_until_due = 8 | High | No due-date bonus at all (+0) |
+| Status = DONE | High | -50 applied |
+| Status = REVIEW | High | -15 applied |
+| Tag list includes a matching tag ("urgent"/"critical"/"blocker") | Medium | +8 applied |
+| Tag list is empty | Medium | No error; no bonus applied |
+| Tag list present but no match | Medium | No bonus applied |
+| Updated < 1 day ago | Medium | +5 applied |
+| Updated ≥ 1 day ago | Medium | No recency bonus |
+| due_date = None | High | Due-date section skipped entirely; no error |
+| priority not in priority_weights (e.g. None or unrecognized value) | Medium | Falls back to 0 via `.get()`; no crash |
+| Overdue AND status = DONE (combination) | Low (run only after all above pass) | Confirms penalty/bonus interaction produces a sensible net score — document actual result |
+| URGENT priority AND "urgent" tag (combination) | Low (run only after all above pass) | Confirms both bonuses stack additively rather than double-counting or conflicting |
 
+## Priority 2 — `sort_tasks_by_importance`
 
-**Expected outcomes for each test**
+**Type: Unit test**, deliberately isolated from `calculate_task_score`'s correctness. Achieve this by using tasks with pre-determined/mocked scores (or by trusting Priority 1 tests already passed) so a failure here points specifically to ordering logic, not scoring math.
+
+**Dependencies:** Calls `calculate_task_score` internally — Priority 1 tests must pass first, otherwise a failure here is ambiguous (could be either function's fault).
+
+| Test Case | Priority | Expected Outcome |
+|---|---|---|
+| Tasks with distinct scores, unsorted input | High | Returned list is ordered highest score → lowest score |
+| Already-sorted input | Medium | Order unchanged |
+| Reverse-sorted input | Medium | Order fully reversed to descending |
+| Tasks with equal scores | High | Original relative order preserved (Python `sorted()` stability guarantee, holds with `reverse=True`) |
+| Empty task list | Medium | Returns empty list, no error |
+| Single-task list | Low | Returns the same single task |
+
+## Priority 3 — `get_top_priority_tasks`
+
+**Type: Unit test** for limit behavior; effectively an **integration test** for the overall pipeline, since it exercises `sort_tasks_by_importance` → `calculate_task_score` end-to-end.
+
+**Dependencies:** Requires Priority 1 and Priority 2 tests to pass first — this function's correctness is contingent on both.
+
+| Test Case | Priority | Expected Outcome |
+|---|---|---|
+| Default limit (5), more than 5 tasks provided | High | Returns exactly the top 5 tasks by score |
+| Small positive limits (1, 2) | High | Returns exactly that many top-scoring tasks |
+| limit = 0 | Medium | Returns empty list (Python `[:0]` behavior) |
+| limit greater than number of tasks available | Medium | Returns all available tasks, no error (Python slicing stops safely at list end) |
+| limit = -1 | Low — edge case for documentation, not a supported use case | Returns all tasks except the last one (Python negative-slice behavior) — flag as a potential design gap; consider whether negative limits should raise an error instead |
+| Full pipeline integration: unsorted tasks with mixed priorities/due dates/statuses, no scores pre-mocked | High (integration test) | Confirms the three functions work correctly together end-to-end, not just individually |
+
 
