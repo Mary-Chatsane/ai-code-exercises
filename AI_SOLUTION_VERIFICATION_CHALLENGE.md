@@ -197,6 +197,7 @@ No `i`/`j` variables exist at all — the base cases (`left.length === 0`, `righ
 
 Applied the prompt and concluded that the solution has been verified with options of how the bug would be fixed at a large codebase, with different approaches that have been given. I went through with AI as to what could possibly go wrong if the input data changed or if there were indicated values. So we revealed more verification options for depth sake, otherwise the original one-character fix (j++ → i++) from the bug was already fully correct. As a result, here's the final version below. Taking only the improvements that meaningfully reduce risk, and skipping the ones that add complexity without clear payoff (no comparator parameter, no elaborate validation).
 
+
 ```
 function mergeSort(arr) {
   if (arr.length <= 1) return arr;
