@@ -1,7 +1,7 @@
 ## Exercise: Learning how to test code with AI
 **Five listed cases built through conversation with AI**
 
-# Test Plan: `calculate_task_score`
+## Test Plan: `calculate_task_score`
 
 ## 1. Base Case (write this first)
 A plain task with no bonuses or penalties — confirms the priority-weight math alone works correctly before layering on anything else.
