@@ -111,9 +111,9 @@ This function doesn't have explicit error handling (no try/catch, no input valid
 ## Alternative approaches 
 **Prompt 2: Learning Through Alternative Approaches**
 
-Claude suggested 3 Approaches, I lean more towards Approach A. it's better, performs better and easy to maintain. 
+Claude suggested 3 Approaches, I lean more towards Approach A. it's better, performs better and easy to maintain.
 
-### Approach A — use `.concat()` and `.slice()` to eliminate the cleanup loops entirely
+**Approach A — use `.concat()` and `.slice()` to eliminate the cleanup loops entirely**
 
 ```javascript
 function merge(left, right) {
@@ -139,7 +139,7 @@ function merge(left, right) {
 
 This removes the two buggy-prone cleanup loops entirely. There's no `i++`/`j++` typo possible here because there's no loop left to write it in — `.slice(i)` just means "everything from index i onward," and `.concat()` appends it.
 
-### Approach B — a single unified loop using a guard for exhausted arrays
+**Approach B — a single unified loop using a guard for exhausted arrays**
 
 ```javascript
 function merge(left, right) {
@@ -163,7 +163,7 @@ function merge(left, right) {
 
 This collapses all three loops into one, using the condition `j >= right.length` to mean "right is exhausted, so take from left no matter what." This is more compact, but denser to read — you have to hold two conditions in your head at once (`left[i] < right[j]` AND "is right exhausted").
 
-### Approach C — recursive merge (functional style, no explicit index variables at all)
+**Approach C — recursive merge (functional style, no explicit index variables at all)**
 
 ```javascript
 function merge(left, right) {
@@ -180,7 +180,7 @@ function merge(left, right) {
 
 No `i`/`j` variables exist at all — the base cases (`left.length === 0`, `right.length === 0`) handle what the cleanup loops used to do. This makes the "leftover" bug structurally impossible, since there's no manual index tracking to get wrong.
 
-## 3. Comparing All Approaches
+**Comparing All Approaches(*
 
 | | **Original (fixed)** | **A: concat/slice** | **B: unified loop** | **C: recursive** |
 |---|---|---|---|---|
