@@ -83,7 +83,7 @@ The main merge loop (the first `while`) works completely correctly, and small te
 it seems my guess was correct in a way. I wasn't sure but it appears I was able to spot where the bug was. As the problem was the j++ that climbed way forward before i++ could, because i++ was the correct variable that must have came forward. Although it was not an execution but j++ being in the wrong loop.
 
 ## Collaboration verification prompt of AI's response
-** Prompt 1: Collaborative Solution Verification
+**Prompt 1: Collaborative Solution Verification**
 
 After verification,Claude confirmed and corrected my understanding that it's not quite "j++ was executed twice." What actually happened: in the buggy loop, j++ was in the wrong loop entirely. That loop was supposed to be draining left[i] values, so it should have incremented i. Instead it incremented j — a variable that loop doesn't even use for anything (it's not read anywhere inside that loop). The real consequence isn't "climbing forward too fast" — it's that i never changes at all, so left[i] pushes the same element forever. j climbing is actually irrelevant noise; it doesn't cause the bug, it's just a side effect of the typo. The bug is entirely "the wrong loop variable was incremented, so the loop's exit condition can never become true."
 Your fix explanation is accurate: the corrected code lets each loop increment the variable that controls its own exit condition, so both cleanup loops can actually terminate.
@@ -108,5 +108,8 @@ This function doesn't have explicit error handling (no try/catch, no input valid
 - `merge([1,2], "ab")` — strings have `.length` too, so this might silently "work" in a broken way rather than throwing, worth checking what actually happens
 
 
-## 
+## Alternative approaches 
+**Prompt 2: Learning Through Alternative Approaches**
+
+
 
