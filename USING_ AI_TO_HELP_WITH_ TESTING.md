@@ -174,7 +174,7 @@ Instead of rewriting it for me, please:
 5. Guide me in improving my assertions to be more precise
 
 
-** Improved test after conversations with answered questions from Claude:** 
+**Improved test after conversations with answered questions from Claude:** 
 
 def test_calculate_task_score_basic():
     # Create a task with LOW priority, and every other scoring
@@ -192,3 +192,5 @@ def test_calculate_task_score_basic():
 
     # LOW priority weight (1) * 10 = 10, with no other bonuses/penalties
     assert score == 10
+
+## Exercise 2.2: Learning From Examples
