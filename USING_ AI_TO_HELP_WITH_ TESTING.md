@@ -195,4 +195,14 @@ def test_calculate_task_score_basic():
     assert score == 10
 ```
 
+## What Changed and Why
+
+| Field | Original | Corrected | Reason |
+|---|---|---|---|
+| `priority` | `TaskPriority.LOW` | `TaskPriority.LOW` | Unchanged — this is the one factor the test intends to verify |
+| `due_date` | *(not set — relied on Task's default)* | `None` | Explicitly skips the due-date bonus section entirely |
+| `status` | *(not set — relied on Task's default)* | `TaskStatus.TODO` | Avoids both the DONE (-50) and REVIEW (-15) penalties |
+| `tags` | *(not set — relied on Task's default)* | `[]` | Guarantees no tag bonus is applied |
+| `updated_at` | *(not set — relied on Task's default)* | `datetime.now() - timedelta(days=7)` | Avoids the recency bonus with clear buffer — deliberately not placed at the exact 1-day boundary, since that boundary isn't what this test is checking |
+
 ## Exercise 2.2: Learning From Examples
