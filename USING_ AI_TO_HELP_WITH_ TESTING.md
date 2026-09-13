@@ -174,9 +174,9 @@ Instead of rewriting it for me, please:
 5. Guide me in improving my assertions to be more precise
 
 
-**Improved test after conversations with answered questions from Claude:** 
+**Improved test of `test_calculate_task_score_basic` after conversations with answered questions from Claude**
 
-
+```python
 def test_calculate_task_score_basic():
     # Create a task with LOW priority, and every other scoring
     # factor explicitly neutralized so this test isolates only
