@@ -176,6 +176,7 @@ Instead of rewriting it for me, please:
 
 **Improved test after conversations with answered questions from Claude:** 
 
+
 def test_calculate_task_score_basic():
     # Create a task with LOW priority, and every other scoring
     # factor explicitly neutralized so this test isolates only
@@ -192,5 +193,6 @@ def test_calculate_task_score_basic():
 
     # LOW priority weight (1) * 10 = 10, with no other bonuses/penalties
     assert score == 10
+
 
 ## Exercise 2.2: Learning From Examples
