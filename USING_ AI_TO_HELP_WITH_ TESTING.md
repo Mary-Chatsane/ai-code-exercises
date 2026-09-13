@@ -195,7 +195,7 @@ def test_calculate_task_score_basic():
     assert score == 10
 ```
 
-## What Changed and Why
+**What Changed and Why:**
 
 | Field | Original | Corrected | Reason |
 |---|---|---|---|
