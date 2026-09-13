@@ -120,4 +120,75 @@ Each test case below is labeled with: **Priority**, **Test Type**, **Dependencie
 | limit = -1 | Low — edge case for documentation, not a supported use case | Returns all tasks except the last one (Python negative-slice behavior) — flag as a potential design gap; consider whether negative limits should raise an error instead |
 | Full pipeline integration: unsorted tasks with mixed priorities/due dates/statuses, no scores pre-mocked | High (integration test) | Confirms the three functions work correctly together end-to-end, not just individually |
 
+---
 
+**Part 2: Improving a Single Test**
+**Exercise 2.1: Writing Your First Test**
+
+**Basic Test:**
+
+```
+def test_calculate_task_score_basic():
+    # Create a simple task with LOW priority
+    task = Task(priority=TaskPriority.LOW)
+
+    # Calculate the score
+    score = calculate_task_score(task)
+
+    # Check that the score matches the LOW priority weight
+    assert score == 10
+```
+
+**calculateTaskScore function with the prompt to improve the test**
+
+I wrote this test for the following function:
+
+Function:
+def calculate_task_score(task):
+    """Calculate a priority score for a task based on multiple factors."""
+    # Base priority weights
+    priority_weights = {
+        TaskPriority.LOW: 1,
+        TaskPriority.MEDIUM: 2,
+        TaskPriority.HIGH: 4,
+        TaskPriority.URGENT: 6
+    }
+
+My test:
+
+def test_calculate_task_score_basic():
+    # Create a simple task with LOW priority
+    task = Task(priority=TaskPriority.LOW)
+
+    # Calculate the score
+    score = calculate_task_score(task)
+
+    # Check that the score matches the LOW priority weight
+    assert score == 10
+
+Instead of rewriting it for me, please:
+1. Ask me questions about what my test is trying to verify
+2. Help me identify if my test is checking behavior or implementation details
+3. Suggest how I could make the test's purpose clearer
+4. Ask me what edge cases my test might be missing
+5. Guide me in improving my assertions to be more precise
+
+
+** Improved test after conversations with answered questions from Claude** 
+
+def test_calculate_task_score_basic():
+    # Create a task with LOW priority, and every other scoring
+    # factor explicitly neutralized so this test isolates only
+    # the priority-weight calculation.
+    task = Task(
+        priority=TaskPriority.LOW,
+        due_date=None,
+        status=TaskStatus.TODO,
+        tags=[],
+        updated_at=datetime.now() - timedelta(days=7),  # well clear of the recency boundary
+    )
+
+    score = calculate_task_score(task)
+
+    # LOW priority weight (1) * 10 = 10, with no other bonuses/penalties
+    assert score == 10
