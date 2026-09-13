@@ -139,7 +139,7 @@ def test_calculate_task_score_basic():
     assert score == 10
 ```
 
-**calculateTaskScore function with the prompt to improve the test**
+**calculateTaskScore function with the prompt to improve the test:**
 
 I wrote this test for the following function:
 
@@ -174,7 +174,7 @@ Instead of rewriting it for me, please:
 5. Guide me in improving my assertions to be more precise
 
 
-** Improved test after conversations with answered questions from Claude** 
+** Improved test after conversations with answered questions from Claude:** 
 
 def test_calculate_task_score_basic():
     # Create a task with LOW priority, and every other scoring
