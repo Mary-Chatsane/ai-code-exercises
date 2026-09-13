@@ -193,7 +193,6 @@ def test_calculate_task_score_basic():
 
     # LOW priority weight (1) * 10 = 10, with no other bonuses/penalties
     assert score == 10
-
-
+```
 
 ## Exercise 2.2: Learning From Examples
