@@ -195,4 +195,5 @@ def test_calculate_task_score_basic():
     assert score == 10
 
 
+
 ## Exercise 2.2: Learning From Examples
