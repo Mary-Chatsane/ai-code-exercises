@@ -298,3 +298,29 @@ instead of the correct:
 days_since_update = (datetime.now() - task.updated_at).days
 ```
 
+**Failed bug test: confirmed to be a failure by Claude**
+
+```
+from datetime import datetime, timedelta
+
+def test_task_updated_two_days_ago_does_not_get_recent_update_bonus():
+    task = Task(
+        title="Test task",
+        priority=TaskPriority.MEDIUM,
+        due_date=None,
+        status=TaskStatus.TODO,
+        tags=[]
+    )
+
+    # Simulate a task that was updated 2 days ago
+    task.updated_at = datetime.now() - timedelta(days=2)
+
+    score = calculate_task_score(task)
+
+    # A task updated 2 days ago should not receive the +5 recent-update bonus
+    expected_score = 2 * 10  # Medium priority = 20
+
+    assert score == expected_score
+```
+
+
