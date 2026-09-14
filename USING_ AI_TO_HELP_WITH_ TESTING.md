@@ -283,5 +283,18 @@ So my decision to not refactor proved to be right.
 
 
 **Exercise 3.2: TDD for Bug Fix**
+
 **Imagined there was a bug,fixed it,wrote a test that demonstrated the bug, then fixed the code to make the test pass.**
+
+The bug: 
+
+```
+days_since_update = (task.updated_at - datetime.now()).days
+```
+
+instead of the correct:
+
+```
+days_since_update = (datetime.now() - task.updated_at).days
+```
 
