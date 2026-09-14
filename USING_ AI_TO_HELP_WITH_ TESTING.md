@@ -206,3 +206,19 @@ def test_calculate_task_score_basic():
 | `updated_at` | *(not set — relied on Task's default)* | `datetime.now() - timedelta(days=7)` | Avoids the recency bonus with clear buffer — deliberately not placed at the exact 1-day boundary, since that boundary isn't what this test is checking |
 
 ## Exercise 2.2: Learning From Examples
+
+**Test for the due date calculation functionality after making use of the prompt and answering questions from AI**
+
+**Due-Date Test Cases for `calculate_task_score`**
+
+
+| Test Case | `due_date` setup | Expected bucket | Purpose |
+|---|---|---|---|
+| Comfortably overdue | `now - timedelta(days=2)` | `< 0` → +35 | Confirms the overdue bonus applies away from any boundary |
+| Barely overdue (boundary) | `now - timedelta(seconds=30)` | `< 0` → +35 | Confirms the `-1`/`0` boundary is correctly on the overdue side |
+| Due today | `now` (or a value producing `days_until_due == 0`) | `== 0` → +20 | Confirms the "due today" bucket triggers correctly |
+| Due in 2 days | `now + timedelta(days=2)` | `<= 2` → +15 | Confirms the upper edge of the "next 2 days" bucket |
+| Due in 3 days | `now + timedelta(days=3)` | `<= 7` → +10 | Confirms the value just past the "next 2 days" boundary falls into the next bucket |
+| Due in 7 days | `now + timedelta(days=7)` | `<= 7` → +10 | Confirms the upper edge of the "next week" bucket |
+| Due in 8 days | `now + timedelta(days=8)` | No bonus (+0) | Confirms values beyond a week correctly receive no due-date bonus |
+
