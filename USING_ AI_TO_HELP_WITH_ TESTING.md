@@ -222,3 +222,12 @@ def test_calculate_task_score_basic():
 | Due in 7 days | `now + timedelta(days=7)` | `<= 7` → +10 | Confirms the upper edge of the "next week" bucket |
 | Due in 8 days | `now + timedelta(days=8)` | No bonus (+0) | Confirms values beyond a week correctly receive no due-date bonus |
 
+
+---
+
+## Part 3: Test-Driven Development Practice
+**Exercise 3.1: TDD for a New Feature**
+
+
+
+
