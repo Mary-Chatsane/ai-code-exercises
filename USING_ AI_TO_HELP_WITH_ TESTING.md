@@ -1,6 +1,6 @@
 ## Exercise: Learning how to test code with AI
 **Part 1: Understanding What to Test**
-**Exercise 1.1: Behavior Analysis*
+**Exercise 1.1: Behavior Analysis**
 
 **Five listed cases built through conversation with AI**
 
