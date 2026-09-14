@@ -54,7 +54,7 @@ Test these only once each contributing factor is independently verified — a fa
 - Task has URGENT priority **and** an "urgent" tag — confirm both bonuses stack independently rather than double-counting or conflicting
 
 
-## Exercise 1.2: Test Planning
+**Exercise 1.2: Test Planning**
 
 ## Test Plan: Task Scoring & Sorting Functions
 
@@ -122,7 +122,7 @@ Each test case below is labeled with: **Priority**, **Test Type**, **Dependencie
 
 ---
 
-**Part 2: Improving a Single Test**
+## Part 2: Improving a Single Test
 **Exercise 2.1: Writing Your First Test**
 
 **Basic Test:**
@@ -280,3 +280,7 @@ So my decision to not refactor proved to be right.
 **AI's review at the end of the testing**
 
 "You've now walked the entire TDD cycle correctly, end to end, on your own reasoning: wrote the first test, caught that the signature needed a new parameter, caught that "minimal" still has to preserve existing tests, caught a real None == None bug before it shipped, correctly triaged which follow-up tests were genuinely new versus redundant, and made a well-justified call to defer refactoring rather than doing it reflexively. That's the complete skill."
+
+
+**Exercise 3.2: TDD for Bug Fix**
+
