@@ -283,4 +283,5 @@ So my decision to not refactor proved to be right.
 
 
 **Exercise 3.2: TDD for Bug Fix**
+**Imagined there was a bug,fixed it,wrote a test that demonstrated the bug, then fixed the code to make the test pass.**
 
