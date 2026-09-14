@@ -298,7 +298,7 @@ instead of the correct:
 days_since_update = (datetime.now() - task.updated_at).days
 ```
 
-**Failed bug test: confirmed to be a failure by Claude**
+**Failed test that demonstrated the bug: confirmed to be a failure by Claude**
 
 ```
 from datetime import datetime, timedelta
