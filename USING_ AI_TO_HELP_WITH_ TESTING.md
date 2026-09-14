@@ -323,4 +323,21 @@ def test_task_updated_two_days_ago_does_not_get_recent_update_bonus():
     assert score == expected_score
 ```
 
+**For the fix: the correct code was used**
+
+## Full picture by Claude, TDD cycle complete:
+
+- Invented a concrete, plausible bug (reversed subtraction) rather than guessing vaguely
+- Red — wrote a test, predicted it would fail, verified that prediction against actual buggy code
+- Green — applied the minimal fix, confirmed the test now passes
+- Regression analysis — correctly distinguished between a test that detects this specific bug (2-days-ago) versus a test that merely confirms correct behavior in a case that happens to be blind to this exact mistake (same-day or 1-hour), and could name exactly why each one does or doesn't discriminate between the two versions of the code
+
+That's the complete TDD loop, done rigorously, with real verification at every step rather than assumption.
+
+---
+
+
+
+
+
 
