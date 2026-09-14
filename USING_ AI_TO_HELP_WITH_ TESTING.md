@@ -236,3 +236,47 @@ score_with_boost = calculate_task_score(task, "user_123")
 assert score_with_boost == score_without_boost + 12
 ```
 
+**second test that was fixed but still needed amendments**
+
+```
+def calculate_task_score(task, current_user=None):
+    ...
+    if task.assigned_to == current_user:
+        score += 12
+    return score
+```
+
+**Third fix after reasoning with Claude and answering questions**
+
+```
+def test_current_user_not_passed_no_boost():
+    task = Task(...)
+    task.assigned_to = "user_123"
+
+    score = calculate_task_score(task)  # current_user defaults to None
+
+    score_baseline = calculate_task_score(task, current_user="someone_else")
+    assert score == score_baseline  # no boost applied either way
+
+
+def test_unassigned_task_no_boost_even_with_current_user_set():
+    task = Task(...)
+    task.assigned_to = None
+
+    score = calculate_task_score(task, current_user="user_123")
+
+    score_baseline = calculate_task_score(task, current_user="another_user")
+    assert score == score_baseline  # no boost — assignment is None, not a match
+```
+
+After figuring that there is some accumulating awkwardness in the function, I did not refactor the whole function yet.
+
+I cleaned up the repeated calls to datetime.now(), As the function currently calls it separately for the due-date calculation and the recency calculation.I found the assignment logic itself to be simple and readable, even after Claude asked if I could refactor before moving to the next feature. So I decided to probably keep it as-is, get the new tests passing, and only refactor when there's a concrete duplication or complexity problem that the tests can protect us against.
+
+As a result,Claude mentioned TDD discipline that: refactor when you have a concrete, describable problem the tests protect you against, not preemptively "for the sake of making it prettier. 
+
+So my decision to not refactor proved to be right. 
+
+**AI's review at the end of the testing**
+
+"You've now walked the entire TDD cycle correctly, end to end, on your own reasoning: wrote the first test, caught that the signature needed a new parameter, caught that "minimal" still has to preserve existing tests, caught a real None == None bug before it shipped, correctly triaged which follow-up tests were genuinely new versus redundant, and made a well-justified call to defer refactoring rather than doing it reflexively. That's the complete skill."
