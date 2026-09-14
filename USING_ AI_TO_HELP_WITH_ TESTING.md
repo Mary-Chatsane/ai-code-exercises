@@ -228,6 +228,11 @@ def test_calculate_task_score_basic():
 ## Part 3: Test-Driven Development Practice
 **Exercise 3.1: TDD for a New Feature**
 
+**first failed test for the new feature**
 
-
+```
+score_without_boost = calculate_task_score(task, "another_user")
+score_with_boost = calculate_task_score(task, "user_123")
+assert score_with_boost == score_without_boost + 12
+```
 
