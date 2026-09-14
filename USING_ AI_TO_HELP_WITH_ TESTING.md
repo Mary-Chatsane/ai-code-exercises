@@ -336,6 +336,8 @@ That's the complete TDD loop, done rigorously, with real verification at every s
 
 ---
 
+## Part 4: Integration Testing
+**Exercise 4.1: Testing the Full Workflow**
 
 
 
