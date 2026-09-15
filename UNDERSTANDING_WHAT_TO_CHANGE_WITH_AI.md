@@ -166,3 +166,189 @@ The general principle: **optimize for reading, not writing.** Code is read far m
 
 ---
 
+**Exercise 2: Function Refactoring (Python)**
+
+# Refactoring Review: `process_orders`
+
+This function is validating, pricing, shipping, taxing, mutating inventory, and aggregating results, all in one loop body. Here's the breakdown.
+
+## 1. Responsibilities Identified
+
+This single function is doing at least **six distinct jobs**:
+
+1. **Validation** — item exists, quantity available, customer exists
+2. **Pricing** — base price + premium discount
+3. **Shipping calculation** — domestic/international rules
+4. **Tax calculation**
+5. **Inventory mutation** — decrementing stock
+6. **Aggregation/orchestration** — looping, collecting results, summing revenue
+
+Each of these can change for independent reasons (tax rate changes, shipping rules change, new discount tiers) — that's the classic signal a function should split.
+
+## 2. Suggested Breakdown
+
+```python
+def validate_order(order, inventory, customer_data):
+    """Returns an error message string, or None if the order is valid."""
+    item_id = order['item_id']
+    quantity = order['quantity']
+    customer_id = order['customer_id']
+
+    if item_id not in inventory:
+        return 'Item not in inventory'
+    if inventory[item_id]['quantity'] < quantity:
+        return 'Insufficient quantity'
+    if customer_id not in customer_data:
+        return 'Customer not found'
+    return None
+
+
+def calculate_item_price(item_id, quantity, customer_id, inventory, customer_data):
+    price = inventory[item_id]['price'] * quantity
+    if customer_data[customer_id]['premium']:
+        price *= PREMIUM_DISCOUNT_MULTIPLIER
+    return price
+
+
+def calculate_shipping(price, customer_id, customer_data):
+    is_domestic = customer_data[customer_id]['location'] == 'domestic'
+    if not is_domestic:
+        return INTERNATIONAL_SHIPPING
+    return DOMESTIC_SHIPPING if price < FREE_SHIPPING_THRESHOLD else 0
+
+
+def calculate_tax(price):
+    return price * TAX_RATE
+
+
+def build_order_result(order, price, shipping, tax):
+    return {
+        'order_id': order['order_id'],
+        'item_id': order['item_id'],
+        'quantity': order['quantity'],
+        'customer_id': order['customer_id'],
+        'price': price,
+        'shipping': shipping,
+        'tax': tax,
+        'final_price': price + shipping + tax,
+    }
+```
+
+## 3. Improved Orchestration
+
+The main function becomes a thin loop that reads like a checklist:
+
+```python
+PREMIUM_DISCOUNT_MULTIPLIER = 0.9
+DOMESTIC_SHIPPING = 5.99
+INTERNATIONAL_SHIPPING = 15.99
+FREE_SHIPPING_THRESHOLD = 50
+TAX_RATE = 0.08
+
+
+def process_orders(orders, inventory, customer_data):
+    processed_orders = []
+    error_orders = []
+    total_revenue = 0
+
+    for order in orders:
+        error = validate_order(order, inventory, customer_data)
+        if error:
+            error_orders.append({'order_id': order['order_id'], 'error': error})
+            continue
+
+        item_id = order['item_id']
+        quantity = order['quantity']
+        customer_id = order['customer_id']
+
+        price = calculate_item_price(item_id, quantity, customer_id, inventory, customer_data)
+        shipping = calculate_shipping(price, customer_id, customer_data)
+        tax = calculate_tax(price)
+
+        inventory[item_id]['quantity'] -= quantity
+        total_revenue += price + shipping + tax
+
+        processed_orders.append(build_order_result(order, price, shipping, tax))
+
+    return {
+        'processed_orders': processed_orders,
+        'error_orders': error_orders,
+        'total_revenue': total_revenue,
+    }
+```
+
+Now each helper is independently testable (e.g., you can unit-test `calculate_shipping` without building a fake order list), and the main function reads top-to-bottom as: validate → price → ship → tax → mutate → aggregate.
+
+## 4. Other Issues Worth Flagging
+
+- **Magic numbers everywhere** (`0.9`, `5.99`, `15.99`, `50`, `0.08`) — pulled into named constants above. Makes future rate/threshold changes a one-line edit instead of a hunt through the function.
+- **Mutating `inventory` in place** — the function has a side effect on its input, which can surprise callers. Worth at least documenting clearly (or consider returning updated inventory instead, depending on how the rest of your codebase treats mutability).
+- **No handling for missing/malformed order dicts** — if `order['item_id']` is missing entirely, you'll get a `KeyError` instead of a clean validation error. Consider validating shape before extracting fields.
+- **`error_orders` inconsistency vs. `processed_orders` naming** — `results` was renamed to `processed_orders` for symmetry; small thing, but consistent naming between the two output lists makes the return dict easier to scan.
+- **Order of operations risk** — inventory is decremented *before* you know the order is fully done processing (which is fine here since nothing after can fail), but if you later add a step that can fail after the inventory update, you'd get partial state corruption. Worth keeping the mutation as late as possible, as done above.
+
+---
+
+**Exercise 3: Code Duplication Detection (JavaScript)**
+
+# Duplication Review: `calculateUserStatistics`
+
+This code has heavy duplication — the same two patterns (sum-for-average, scan-for-max) repeated three times each, once per field.
+
+## 1. Repeated Patterns Identified
+
+- **Averaging pattern** (appears 3x): loop, accumulate a total, divide by length — identical structure for `age`, `income`, `score`.
+- **Max-finding pattern** (appears 3x): initialize to `userData[0][field]`, loop from index 1, compare and replace — identical structure for the same three fields.
+
+That's 6 nearly-identical loops for what's really 2 general operations applied to 3 fields.
+
+## 2. How to Eliminate It
+
+Extract the two patterns into generic helper functions that take a field name (or an accessor function), then loop over the list of fields instead of hand-writing each block.
+
+## 3. Refactored Code
+
+```javascript
+function average(items, field) {
+  const total = items.reduce((sum, item) => sum + item[field], 0);
+  return total / items.length;
+}
+
+function maximum(items, field) {
+  return items.reduce((max, item) => Math.max(max, item[field]), items[0][field]);
+}
+
+function calculateUserStatistics(userData) {
+  const fields = ['age', 'income', 'score'];
+  const stats = {};
+
+  for (const field of fields) {
+    stats[field] = {
+      average: average(userData, field),
+      highest: maximum(userData, field),
+    };
+  }
+
+  return stats;
+}
+```
+
+That's it — 50+ lines down to about 15, with no loss of behavior.
+
+## 4. Benefits
+
+- **Adding a new metric is now a one-word change.** Want `average`/`highest` for a `yearsExperience` field too? Add `'yearsExperience'` to the `fields` array — no new loop to write, no copy-paste risk.
+- **Bug fixes only need to happen once.** If there's an edge case (e.g., empty array causing `NaN`, or `undefined` field values), you fix it in `average`/`maximum` and every field benefits immediately. In the original, you'd have to remember to fix it in six places.
+- **Each helper is independently testable.** `average([{x:1},{x:3}], 'x')` and `maximum(...)` can be unit-tested in isolation, separate from `calculateUserStatistics`'s orchestration.
+- **Intent is clearer.** `average(userData, 'income')` reads as "the average income," while the original's hand-rolled loop requires you to trace the accumulator to confirm what it's computing.
+- **Removes manual indexing entirely.** The original uses `for (let i = 0; ...)` with manual off-by-one handling for the max case (`i = 1` because index `0` seeds the initial value). `reduce` removes that entire class of indexing bugs.
+
+## Edge Case to Flag
+
+If `userData` is ever empty, `average` divides by zero (`NaN`) and `maximum` throws on `userData[0]` being `undefined`. That's a pre-existing issue in the original code too — worth adding a guard if empty input is possible in your use case.
+
+---
+## Reflection:
+
+
+
