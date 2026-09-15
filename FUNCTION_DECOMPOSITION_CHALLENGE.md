@@ -51,4 +51,61 @@ Claude suggested a decomposition plan,which parts should be separate, and what t
 - _generate_pdf_report(report_data, include_charts) — generates the PDF output
 
 **Prompt 2: Single-Responsibility Extraction**
- Extracted one helper function: `_generate_empty_report(report_type, output_format) — generates a minimal report when no data matches the filters`
+
+ Extracted one helper function: `_generate_empty_report(report_type, output_format) — generates a minimal report when no data matches the filters` and made use of the above mentioned Prompt. 
+
+**Code related to this responsibility**
+
+```python
+# Check if we have data after filtering
+if not sales_data:
+    print("Warning: No data matches the specified criteria")
+    # Return empty report structure based on format
+    if output_format == 'json':
+        return {"message": "No data matches the specified criteria", "data": []}
+    else:
+        # For other formats, generate a minimal report file
+        return _generate_empty_report(report_type, output_format)
+```
+
+This is really two things tangled together: *detecting* the empty-data case, and *deciding what to return* for it (including the JSON short-circuit, which currently bypasses `_generate_empty_report` entirely). Both belong to the same responsibility — "produce the right empty-report response" — so it makes sense to pull the whole thing into one function.
+
+## 2. New function
+
+```python
+def _handle_empty_data(report_type, output_format):
+    """
+    Produce the appropriate empty-report response when no sales data
+    matches the given filters/date range.
+    """
+    print("Warning: No data matches the specified criteria")
+
+    if output_format == 'json':
+        return {"message": "No data matches the specified criteria", "data": []}
+
+    return _generate_empty_report(report_type, output_format)
+```
+
+## 3. Modified original function
+
+```python
+sales_data = filtered_data  # (after date range + filters applied)
+
+# Check if we have data after filtering
+if not sales_data:
+    return _handle_empty_data(report_type, output_format)
+
+# Calculate basic metrics
+total_sales = sum(sale['amount'] for sale in sales_data)
+...
+```
+
+The `if not sales_data:` check itself stays in the main function (it's a control-flow guard, not part of the empty-report logic), but everything inside it collapses to a single delegated call.
+
+## 4. Naming and parameters
+
+- **Name**: `_handle_empty_data` — reads as "this is what happens when there's no data," which is clearer than `_generate_empty_report` alone, since the function now also owns the JSON branch and the warning message, not just file generation.
+- **Parameters**: `report_type` and `output_format` — the only two things it needs to decide what to return. `sales_data` isn't passed since it's guaranteed empty inside this function; passing it would just invite dead code checking a condition already known to be true.
+- The original `_generate_empty_report(report_type, output_format)` stub stays as-is, called only for non-JSON formats, same as before.
+
+
