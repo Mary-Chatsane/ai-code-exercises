@@ -350,5 +350,4 @@ If `userData` is ever empty, `average` divides by zero (`NaN`) and `maximum` thr
 ---
 ## Reflection:
 
-
-
+Claude worked on a lot of mistakes, duplications, codes that needed refactoring,and improved codes that could not have been easily readable. I learnt a lot from it, and therefore the exercise to be able to change code with AI worked, and there was quality change and improvements that I could not have easily picked up on face value without digging deep into the codes. Therefore, AI was more efficient and saved time as well.
