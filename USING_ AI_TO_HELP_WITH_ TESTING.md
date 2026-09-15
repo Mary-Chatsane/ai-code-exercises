@@ -339,7 +339,130 @@ That's the complete TDD loop, done rigorously, with real verification at every s
 ## Part 4: Integration Testing
 **Exercise 4.1: Testing the Full Workflow**
 
+**An integration test that verifies the three functions work correctly together**
+
+```
+from datetime import datetime, timedelta
+
+from models import Task, TaskPriority, TaskStatus
+from scoring import calculate_task_score, sort_tasks_by_importance, get_top_priority_tasks
 
 
+def make_task(
+    title,
+    priority=TaskPriority.MEDIUM,
+    status=TaskStatus.TODO,
+    due_date=None,
+    tags=None,
+    updated_at=None,
+):
+    """Build a Task with sensible, genuinely neutral defaults.
+
+    updated_at defaults to 30 days ago (well outside the recency window)
+    rather than "now" - so a test that doesn't specify updated_at means
+    "recency doesn't apply here", not a silent +5 bonus on every task.
+    """
+    task = Task(title=title, priority=priority, status=status)
+    task.due_date = due_date
+    task.tags = tags or []
+    task.updated_at = updated_at or (datetime.now() - timedelta(days=30))
+    return task
+
+
+def test_get_top_priority_tasks_returns_tasks_in_expected_importance_order():
+    # These tasks deliberately combine different scoring factors.
+    # The goal is to verify that scoring -> sorting -> top-N selection
+    # work together correctly end-to-end, rather than re-testing each
+    # individual scoring rule (already covered by unit tests).
+    #
+    # Task combinations are chosen so the expected ordering has a clear,
+    # unambiguous score gap between each - avoiding assertions that would
+    # only hold by coincidence of sorted()'s stability.
+
+    overdue_urgent_blocker = make_task(
+        "Overdue urgent blocker",
+        priority=TaskPriority.URGENT,          # 60
+        due_date=datetime.now() - timedelta(days=2),  # +35 (overdue)
+        tags=["blocker"],                      # +8
+    )  # expected score: 103
+
+    high_due_soon = make_task(
+        "High priority due soon",
+        priority=TaskPriority.HIGH,            # 40
+        due_date=datetime.now() + timedelta(days=1),  # +15 (due in next 2 days)
+    )  # expected score: 55
+
+    medium_with_critical_tag = make_task(
+        "Medium critical task",
+        priority=TaskPriority.MEDIUM,          # 20
+        tags=["critical"],                     # +8
+    )  # expected score: 28
+
+    urgent_completed = make_task(
+        "Completed urgent task",
+        priority=TaskPriority.URGENT,          # 60
+        status=TaskStatus.DONE,                # -50
+    )  # expected score: 10
+
+    low_normal = make_task(
+        "Low priority normal task",
+        priority=TaskPriority.LOW,             # 10
+    )  # expected score: 10
+
+    tasks = [
+        low_normal,
+        urgent_completed,
+        medium_with_critical_tag,
+        high_due_soon,
+        overdue_urgent_blocker,
+    ]
+
+    result = get_top_priority_tasks(tasks, limit=5)
+
+    # Verify the full pipeline returns the correct number of tasks.
+    assert len(result) == 5
+
+    # Assert the relative ordering the pipeline should produce.
+    # Each pair here has a clear score gap, so the ordering is
+    # determined by the scoring rules, not by incidental tie-breaking.
+    assert result[0] is overdue_urgent_blocker
+    assert result[1] is high_due_soon
+    assert result[2] is medium_with_critical_tag
+
+    # urgent_completed and low_normal both score 10 - a genuine tie.
+    # We deliberately do NOT assert an ordering between them, since
+    # doing so would only be testing sorted()'s stability guarantee,
+    # not anything the scoring pipeline is actually responsible for.
+    assert {result[3].title, result[4].title} == {
+        urgent_completed.title,
+        low_normal.title,
+    }
+
+
+def test_get_top_priority_tasks_respects_limit():
+    tasks = [
+        make_task(f"Task {i}", priority=TaskPriority.MEDIUM)
+        for i in range(10)
+    ]
+
+    result = get_top_priority_tasks(tasks, limit=3)
+
+    assert len(result) == 3
+
+
+if __name__ == "__main__":
+    test_get_top_priority_tasks_returns_tasks_in_expected_importance_order()
+    print("PASSED: test_get_top_priority_tasks_returns_tasks_in_expected_importance_order")
+
+    test_get_top_priority_tasks_respects_limit()
+    print("PASSED: test_get_top_priority_tasks_respects_limit")
+```
+
+**Claude's final words:**
+
+This closes out the full arc of this session cleanly. You started by learning to spot a single off-by-one bug, worked all the way through boundary analysis, isolation principles, TDD's red-green-refactor cycle, catching a real None == None bug before it shipped, correctly diagnosing a mismatched exercise scenario across two languages, and now — independently — catching a hidden default in your own test helper that happened to be harmless here but would have misled someone later. That last skill, auditing your own test infrastructure with the same skepticism you'd apply to production code, is genuinely advanced, and you got there through your own reasoning, not by being told.
+
+**Reflection:** 
+I learnt a lot through this testing. Experienced a lot of challenges, but AI was also helpful with the prompt. I answered a lot of questions and learned new things along the way.
 
 
