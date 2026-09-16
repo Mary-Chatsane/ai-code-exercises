@@ -16,6 +16,7 @@ With the explanation I got from Claude, I understood the problem the patters wer
 3. **Connection registry via Dependency Injection** (not a literal Singleton) — reuses pooled connections instead of creating duplicates. *Medium priority, only if connection reuse matters.*
 4. **Strategy** — isolates the connection-string-building logic as swappable units. *Lower priority — Factory already covers most of this need.*
 
+**Prompt 2: Pattern Implementation Guidance**
 
 
 
