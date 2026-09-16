@@ -52,7 +52,7 @@ As I read through the code after running it, I found that it was fairly easy to 
 
 **After applying Prompt 2: Comment and Documentation Addition**
 
-Below is the improved version of the code, that I ran, and it passed, because the assertion had already been fixed. The only  thing that Claude could have improved was adding comments and docstrings. 
+Below is the improved version of the code, that I ran, and it passed, because the assertion had already been fixed. The only  thing that Claude could have improved was adding comments and docstrings. As a result, the logic of the code was not changed but for readability improvements and structure, the change improved the function in a good way.
 
 ```
 Unit tests for the compound interest `calculate()` function in calculator.py.
@@ -136,8 +136,14 @@ if __name__ == "__main__":
 
 
 **After running the test**
+```
+$ py -m unittest test_calculator.py
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.143s
 
-
+OK
+```
 
 
          
