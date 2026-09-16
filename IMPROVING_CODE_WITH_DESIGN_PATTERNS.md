@@ -18,5 +18,7 @@ With the explanation I got from Claude, I understood the problem the patters wer
 
 **Prompt 2: Pattern Implementation Guidance**
 
+Claude corrected my understanding of what Strategy actually does.  it highlighted that strategy design pattern leans more into Interchangeable algorithm. Claude corrected my implementation detail of Strategy and defined the patterns trait as being common interface that is implemented by multiple interchangeable classes, and a context object that holds a reference to one of them and delegates to it instead of branching internally.
+
 
 
