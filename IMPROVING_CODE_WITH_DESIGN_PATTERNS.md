@@ -20,5 +20,5 @@ With the explanation I got from Claude, I understood the problem the patters wer
 
 Claude corrected my understanding of what Strategy actually does.  it highlighted that strategy design pattern leans more into Interchangeable algorithm. Claude corrected my implementation detail of Strategy and defined the patterns trait as being common interface that is implemented by multiple interchangeable classes, and a context object that holds a reference to one of them and delegates to it instead of branching internally.
 
-
+It explained that the Strategy Pattern helps separate different ways of performing an operation, but it does not solve the problem of having too many parameters in a class constructor. That is a separate issue that would be better addressed using the Builder Pattern. Although the Strategy Pattern and Factory Pattern are related, they serve different purposes. A Factory decides which class or object to create, while a Strategy allows an existing object to choose which approach or algorithm to use at runtime. And that in practice, both patterns can work together: a factory-like selection can choose the appropriate strategy, and the main object can delegate the actual work to that strategy. Using them together is common and does not mean they are competing with each other.
 
