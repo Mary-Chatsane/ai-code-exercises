@@ -110,4 +110,5 @@ When writing or reviewing Python code, I will ask myself:
 - Would changing one part of the function require unnecessary changes elsewhere?
 
 
+**Activity 3: Understanding Language Feature**
 
