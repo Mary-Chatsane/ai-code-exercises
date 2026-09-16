@@ -2,7 +2,7 @@
 
 A running log of my findings as I learn how the Task Management System is built (python).
 ---
-Exercise part 1-4 
+Exercise part 1-3
 ---
 **Exercise Part 1: Understanding a Specific Feature**
 
@@ -172,23 +172,24 @@ If the process fails between step 1 and step 2, memory and disk fall out of sync
 
 ```mermaid
 sequenceDiagram
-    participant U as User (CLI)
+    participant U as User CLI
     participant TM as TaskManager
     participant TS as TaskStorage
     participant F as tasks.json
 
-    U->>TM: complete_task(task_id)
+    U->>TM: update_task_status(task_id, DONE)
     TM->>TS: get_task(task_id)
-    TS-->>TM: Task object (or None)
+    TS-->>TM: Task object or None
+
     alt Task found
-        TM->>TM: set status=COMPLETED, completed_at=now()
-        TM->>TS: update_task(task)
-        TS->>F: serialize all tasks, write to disk
-        F-->>TS: write result (success/failure)
-        TS-->>TM: success/failure
-        TM-->>U: confirmation or error
+        TM->>TM: mark_as_done()
+        TM->>TS: save()
+        TS->>F: Serialize tasks and write to disk
+        F-->>TS: Save successful or failed
+        TS-->>TM: Confirmation or error
+        TM-->>U: Task completion result
     else Task not found
-        TM-->>U: error message
+        TM-->>U: Task not found
     end
 ```
 
