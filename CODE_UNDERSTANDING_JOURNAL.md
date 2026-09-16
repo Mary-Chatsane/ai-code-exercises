@@ -119,9 +119,78 @@ responds to direct prompt after I had attempted to fill it according to my under
 - The misconception was basically own how files interactions work with each other. I only understood as I asked and answered questions that AI asked me, and that the README that I worked with in this exercise was not part of the program executions. The point was for me to understand how task commands that have to do with low to high priorities are made. So that was a highlight for me, because to understand how code works, I needed to understand the base of it, and how commands in task creation are made.
 
 
-**Exercise part 3: Mapping data flow**
+**Exercise part 3: Mapping data flow after applying Prompt 3**
+This is a mapped diagram of data flow after filling in the prompt and had Claude answer and ask questions. With that information, I mapped out the flow with Claude help in sharpening my understanding and helped me notice my knowledge gaps. 
 
+## Task Completion: Data Flow
 
-**Exercise part 4: Reflection and presentation**
+## Overview Diagram
 
+```mermaid
+flowchart TD
+    A["User runs: complete-task command<br/>(cli.py)"] --> B["cli.py parses task_id<br/>and calls TaskManager"]
+    B --> C["TaskManager.complete_task(task_id)"]
+    C --> D{"Task exists in<br/>TaskStorage?"}
+    D -- "No" --> E["Return False /<br/>print 'task not found'"]
+    D -- "Yes" --> F["Retrieve Task object<br/>from TaskStorage"]
+    F --> G["Update in-memory state:<br/>status = TaskStatus.COMPLETED<br/>completed_at = now()"]
+    G --> H["TaskManager calls<br/>storage.update_task()"]
+    H --> I{"Write to<br/>tasks.json<br/>succeeds?"}
+    I -- "No" --> J["Exception / IOError<br/>state not persisted"]
+    I -- "Yes" --> K["tasks.json updated<br/>on disk"]
+    K --> L["cli.py confirms<br/>success to user"]
+
+    style E fill:#f8d7da,stroke:#c0392b
+    style J fill:#f8d7da,stroke:#c0392b
+    style K fill:#d4edda,stroke:#27ae60
+```
+
+## State Changes During Completion
+
+| Field | Before | After |
+|---|---|---|
+| `status` | `TaskStatus.PENDING` (or `IN_PROGRESS`) | `TaskStatus.COMPLETED` |
+| `completed_at` / completion info | `None` | timestamp set |
+| In-memory object (`TaskStorage`) | old values | updated values |
+| `tasks.json` on disk | reflects old state | rewritten with new state (only after successful save) |
+
+Two state changes happen in sequence, not one atomic step:
+1. **In-memory update** — the `Task` object's status and completion fields are changed inside `TaskManager`/`TaskStorage`.
+2. **Persisted update** — `TaskStorage` writes the full task list back to `tasks.json`.
+
+If the process fails between step 1 and step 2, memory and disk fall out of sync until the app restarts (at which point disk state wins, since it's reloaded from `tasks.json`).
+
+## Potential Points of Failure
+
+- **Invalid or missing `task_id`** — user passes an ID that doesn't exist; should be caught by an existence check before any mutation (similar to `add_tag_to_task()`'s pattern).
+- **Task already completed** — no guard shown against re-completing; could silently overwrite `completed_at`.
+- **File write failure** — `tasks.json` may fail to write due to permissions, disk space, or concurrent access, leaving in-memory state ahead of disk state.
+- **Partial/corrupted JSON** — if the write is interrupted mid-save, `tasks.json` could become unreadable on next load.
+- **No rollback** — if the save fails after the in-memory object is already mutated, there's no shown mechanism to revert the in-memory `status` back to its prior value.
+
+## How Persistence Works
+
+```mermaid
+sequenceDiagram
+    participant U as User (CLI)
+    participant TM as TaskManager
+    participant TS as TaskStorage
+    participant F as tasks.json
+
+    U->>TM: complete_task(task_id)
+    TM->>TS: get_task(task_id)
+    TS-->>TM: Task object (or None)
+    alt Task found
+        TM->>TM: set status=COMPLETED, completed_at=now()
+        TM->>TS: update_task(task)
+        TS->>F: serialize all tasks, write to disk
+        F-->>TS: write result (success/failure)
+        TS-->>TM: success/failure
+        TM-->>U: confirmation or error
+    else Task not found
+        TM-->>U: error message
+    end
+```
+
+`TaskStorage` is the single source of truth for persistence: it holds the current task list in memory and is responsible for serializing that entire list to `tasks.json` on every change, then reloading from that file the next time the application starts.
 
