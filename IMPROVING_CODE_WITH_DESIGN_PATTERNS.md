@@ -5,5 +5,17 @@ The code feels messy and hard to maintain because the DatabaseConnection class i
 
 **Applied Prompt 1: Pattern Opportunity Identification**
 
+With the explanation I got from Claude, I understood the problem the patters were solving. The prompt was detailed, as a result, Claude elaborated on a lot of of points, identified structure, made suggestions, explained the benefits of each pattern, highlighted potential drawbacks or implementation challenges.  I found that helpful.
+
+**Patterns suggested:**
+
+## Suggested patterns
+
+1. **Factory Method / Simple Factory** — replaces the `if/elif` chain with one class per database type, created via a factory function. *Highest priority.*
+2. **Builder** — replaces the 10-parameter constructor with step-by-step, self-documenting configuration. *High priority, pairs with Factory.*
+3. **Connection registry via Dependency Injection** (not a literal Singleton) — reuses pooled connections instead of creating duplicates. *Medium priority, only if connection reuse matters.*
+4. **Strategy** — isolates the connection-string-building logic as swappable units. *Lower priority — Factory already covers most of this need.*
+
+
 
 
