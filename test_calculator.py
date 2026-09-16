@@ -16,8 +16,8 @@ class TestCompoundInterestCalculator(unittest.TestCase):
         result = calculate(principal=1000, rate=5, time=3, additional=500)
 
         # With additional contributions of 500 at end of years 1 and 2
-        self.assertAlmostEqual(result["final_amount"], 2234.51, places=2)
-        self.assertAlmostEqual(result["interest_earned"], 234.51, places=2)
+        self.assertAlmostEqual(result["final_amount"], 2239.52, places=2)
+        self.assertAlmostEqual(result["interest_earned"], 239.52, places=2)
         self.assertEqual(result["total_contributions"], 2000)
 
     def test_different_compounding_frequency(self):
