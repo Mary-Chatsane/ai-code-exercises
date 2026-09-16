@@ -315,3 +315,11 @@ def test_full_connect_flow_returns_and_prints_like_original(capsys):
     assert "Connection successful!" in captured.out
     assert result is None
 ```
+
+
+**What each test confirms against the original behavior**
+
+1. **MySQL connection string format** — exact match to the original's `mysql://...?charset=...&connectionTimeout=...&useSSL=true` string, including SSL appended.
+2. **MongoDB connection string format** — exact match to the original's `mongodb://...?retryAttempts=...&poolSize=...`, and confirms `ssl=true` is correctly *absent* when `use_ssl=False`, same as the original's conditional.
+3. **Same error on unsupported type** — both the factory and the full `DatabaseConnection` constructor raise the identical `ValueError` message the original raised.
+4. **Full end-to-end flow** — checks the three printed lines and `None` return value match exactly what the original monolithic `connect()` produced.
