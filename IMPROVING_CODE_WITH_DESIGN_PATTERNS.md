@@ -42,6 +42,7 @@ Unlike the Strategy alone that I recommended, Claude recommended that we have it
 ---
 
 **Refactored code with Strategy and Factory Method:**
+Proving that the code was refactored with the same end result as before, just better organized.
 
 ```
 from abc import ABC, abstractmethod
@@ -205,3 +206,111 @@ if __name__ == "__main__":
     mongo_db.connect()
 ```
 
+**Tests that verified that nothing broke**
+
+"""
+Tests verifying the Strategy+Factory refactor preserves the original
+DatabaseConnection behavior.
+
+Run with: pytest test_db_connection.py -v
+"""
+
+import pytest
+from db_connection_strategy_factory import DatabaseConnection, create_strategy
+
+
+def test_mysql_connection_string_matches_original_format():
+    """
+    Original MySQL branch built:
+    mysql://{user}:{pw}@{host}:{port}/{db}?charset={c}&connectionTimeout={t}&useSSL=true
+    """
+    strategy = create_strategy('mysql')
+    config = {
+        'username': 'db_user',
+        'password': 'password123',
+        'host': 'localhost',
+        'port': 3306,
+        'database': 'app_db',
+        'use_ssl': True,
+        'charset': 'utf8',
+        'connection_timeout': 30,
+    }
+
+    result = strategy.build_connection_string(config)
+
+    expected = (
+        "mysql://db_user:password123@localhost:3306/app_db"
+        "?charset=utf8&connectionTimeout=30&useSSL=true"
+    )
+    assert result == expected
+
+
+def test_mongodb_connection_string_matches_original_format():
+    """
+    Original MongoDB branch built:
+    mongodb://{user}:{pw}@{host}:{port}/{db}?retryAttempts={r}&poolSize={p}&ssl=true
+    """
+    strategy = create_strategy('mongodb')
+    config = {
+        'username': 'mongo_user',
+        'password': 'mongo123',
+        'host': 'mongodb.example.com',
+        'port': 27017,
+        'database': 'analytics',
+        'use_ssl': False,
+        'retry_attempts': 5,
+        'pool_size': 10,
+    }
+
+    result = strategy.build_connection_string(config)
+
+    expected = (
+        "mongodb://mongo_user:mongo123@mongodb.example.com:27017/analytics"
+        "?retryAttempts=5&poolSize=10"
+    )
+    assert result == expected
+    # use_ssl was False, so "&ssl=true" must NOT appear (matches original behavior)
+    assert "ssl=true" not in result
+
+
+def test_unsupported_db_type_raises_same_error_as_original():
+    """
+    Original code raised: ValueError(f"Unsupported database type: {db_type}")
+    both from the factory and from DatabaseConnection construction.
+    """
+    with pytest.raises(ValueError, match="Unsupported database type: oracle"):
+        create_strategy('oracle')
+
+    with pytest.raises(ValueError, match="Unsupported database type: oracle"):
+        DatabaseConnection(
+            db_type='oracle',
+            host='localhost',
+            port=1521,
+            username='u',
+            password='p',
+            database='d',
+        )
+
+
+def test_full_connect_flow_returns_and_prints_like_original(capsys):
+    """
+    End-to-end check: DatabaseConnection(...).connect() should print the same
+    three lines the original monolithic version printed, and return None
+    (since no real driver is wired up, same as the original stub behavior).
+    """
+    db = DatabaseConnection(
+        db_type='mysql',
+        host='localhost',
+        port=3306,
+        username='db_user',
+        password='password123',
+        database='app_db',
+        use_ssl=True,
+    )
+    result = db.connect()
+
+    captured = capsys.readouterr()
+    assert "Connecting to mysql database..." in captured.out
+    assert "MySQL Connection: mysql://db_user:password123@localhost:3306/app_db" in captured.out
+    assert "Connection successful!" in captured.out
+    assert result is None
