@@ -208,7 +208,7 @@ if __name__ == "__main__":
 
 **Tests that verified that nothing broke**
 
-"""
+```
 Tests verifying the Strategy+Factory refactor preserves the original
 DatabaseConnection behavior.
 
@@ -314,3 +314,4 @@ def test_full_connect_flow_returns_and_prints_like_original(capsys):
     assert "MySQL Connection: mysql://db_user:password123@localhost:3306/app_db" in captured.out
     assert "Connection successful!" in captured.out
     assert result is None
+```
