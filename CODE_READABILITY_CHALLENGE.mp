@@ -4,7 +4,8 @@
 
 I ran the test for the python function that has to perform calculations for financial application using the Unit Test, but the test failed. 
 
-Failed test:
+
+**Failed test:**
 ```
 $ py -m unittest test_calculator.py
 ..F.
@@ -19,6 +20,8 @@ AssertionError: 2239.52 != 2234.51 within 2 places (5.0099999999997635 differenc
 
 ----------------------------------------------------------------------
 Ran 4 tests in 0.007s
+
+
 
 FAILED (failures=1)
 ```
