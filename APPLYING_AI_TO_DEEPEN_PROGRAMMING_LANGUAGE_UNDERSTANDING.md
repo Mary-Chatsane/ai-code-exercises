@@ -24,7 +24,7 @@ def find_high_priority_tasks(tasks):
     return high_priority_tasks
 ```
 
-**Claude's idiomatic version after applying the Idiomatic Code Transformationprompt**
+**Claude's idiomatic version after applying the Idiomatic Code Transformation prompt**
 
 I leant that list comprehensions can replace a loop that only builds a list. Instead of creating an empty list, looping through everything, checking each task, and appending matching tasks, Python lets you express the same operation in one line.
 I also learnt that pythons uses truthiness, therefore `if len(high_priority_tasks) > 0:` on the code was not needed because Python treats a non-empty list as True and an empty list as False.
@@ -50,3 +50,45 @@ def print_high_priority_tasks(tasks):
 
     return high_priority_tasks
 ```
+
+**Activity 2**
+
+I did not have code that I had written three or more months ago, so I created a small Python Task Management function for this activity to simulate reviewing older code with fresh eyes. The code:
+
+```
+def manage_tasks(tasks):
+    completed_tasks = []
+    pending_tasks = []
+    urgent_tasks = []
+    total_tasks = 0
+
+    for task in tasks:
+        total_tasks = total_tasks + 1
+
+        if task["status"] == "done":
+            completed_tasks.append(task)
+        else:
+            pending_tasks.append(task)
+
+        if task["priority"] == "urgent":
+            urgent_tasks.append(task)
+
+    print("Total tasks:", total_tasks)
+    print("Completed tasks:", len(completed_tasks))
+    print("Pending tasks:", len(pending_tasks))
+    print("Urgent tasks:", len(urgent_tasks))
+
+    print("\nCompleted:")
+    for task in completed_tasks:
+        print("-", task["title"])
+
+    print("\nPending:")
+    for task in pending_tasks:
+        print("-", task["title"])
+
+    return completed_tasks, pending_tasks, urgent_tasks
+```
+
+
+I used Claude's Code Quality prompt to identify code smells and evaluate the readability, performance, and maintainability of the function.
+
