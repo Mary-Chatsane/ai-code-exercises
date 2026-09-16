@@ -28,3 +28,11 @@ FAILED (failures=1)
 
 Before I could move on, I had to fix the test_calculator.py  because the problem was not how I ran the test, but The real issue was the test file itself, not the calculate() function. The calculate() is correct — the test author just typed in a wrong expected number, and I did not put in any numbers, I only ran the function test.
 
+```
+$ py -m unittest test_calculator.py
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.004s
+
+OK
+```
