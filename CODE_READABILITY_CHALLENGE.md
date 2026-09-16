@@ -45,3 +45,6 @@ Ran 4 tests in 0.004s
 
 OK
 ```
+
+As I read through the code after running it, I found that it ws6 fairly easy to follow because the test class, test names, variables, and comments clearly explain what each test is checking. The names are not strange, although additional could be clearer as something like additional_contribution because it does not say exactly what is being added. Some explanations could also be more explicit, especially about assumptions such as monthly compounding being the default and additional contributions being made at the end of each year. Overall, though, the code is well structured and readable rather than confusing or difficult to understand.
+
