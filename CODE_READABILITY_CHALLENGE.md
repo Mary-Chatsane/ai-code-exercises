@@ -6,6 +6,7 @@ I ran the test for the python function that has to perform calculations for fina
 
 
 **Failed test:**
+
 ```
 $ py -m unittest test_calculator.py
 ..F.
@@ -22,7 +23,6 @@ AssertionError: 2239.52 != 2234.51 within 2 places (5.0099999999997635 differenc
 Ran 4 tests in 0.007s
 
 
-
 FAILED (failures=1)
 ```
 
@@ -30,12 +30,14 @@ Before I could move on, I had to fix the test_calculator.py  because the problem
 
 **After fixing the assertion error to:**
 
+
 ```
 self.assertAlmostEqual(result["final_amount"], 2239.52, places=2)
 self.assertAlmostEqual(result["interest_earned"], 239.52, places=2)
 ```
 
 **The test was able to run smoothly:**
+
 
 ```
 $ py -m unittest test_calculator.py
@@ -52,8 +54,7 @@ As I read through the code after running it, I found that it was fairly easy to 
 
 Below is the improved version of the code, that I ran, and it passed, because the assertion had already been fixed. The only  thing that Claude could have improved was adding comments and docstrings. 
 
-
-"""
+```
 Unit tests for the compound interest `calculate()` function in calculator.py.
 
 These tests verify that the calculator correctly computes:
