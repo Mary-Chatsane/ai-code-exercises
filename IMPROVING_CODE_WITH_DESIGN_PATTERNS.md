@@ -22,3 +22,13 @@ Claude corrected my understanding of what Strategy actually does.  it highlighte
 
 It explained that the Strategy Pattern helps separate different ways of performing an operation, but it does not solve the problem of having too many parameters in a class constructor. That is a separate issue that would be better addressed using the Builder Pattern. Although the Strategy Pattern and Factory Pattern are related, they serve different purposes. A Factory decides which class or object to create, while a Strategy allows an existing object to choose which approach or algorithm to use at runtime. And that in practice, both patterns can work together: a factory-like selection can choose the appropriate strategy, and the main object can delegate the actual work to that strategy. Using them together is common and does not mean they are competing with each other.
 
+>*Step-by-step refactoring plan by Claude**
+
+- Define a ConnectionStrategy interface with one required method: connect(config).
+- Create one concrete strategy class per database type (MySQLStrategy, PostgreSQLStrategy, MongoDBStrategy, RedisStrategy), each implementing connect() with only the logic that type needs.
+- Move each elif branch's body verbatim into its matching strategy class.
+- Change DatabaseConnection.__init__ to select and store a strategy instance (via a lookup dict) instead of just storing db_type as a string.
+- Change DatabaseConnection.connect() to delegate: self.connection = self._strategy.connect(self._config) — no more if/elif in the context class.
+Keep the public API (DatabaseConnection(db_type=..., ...).connect()) unchanged so existing call sites don't break.
+
+
