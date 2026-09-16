@@ -111,4 +111,34 @@ When writing or reviewing Python code, I will ask myself:
 
 
 **Activity 3: Understanding Language Feature**
+**Chose Python decorators**
 
+1. I learned that a decorator can wrap a function and add behaviour to it without changing the original function's code. I also learned that the "@log_call" syntax is shorthand for replacing the original function with the decorated version.
+
+2. I learned that "*args" and "**kwargs" allow a decorator to pass different positional and keyword arguments through to the original function. I also learned that the wrapper needs to return the original function's result so that the decorated function does not accidentally return "None".
+
+3. I learned about "functools.wraps". A decorator can otherwise replace information about the original function, such as its name and documentation. Using "@wraps(func)" preserves that information and makes the decorator behave better with tools such as debugging and testing frameworks.
+
+**Final improvement code**
+
+from functools import wraps
+
+```
+def log_call(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"{func.__name__} is being called")
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} finished")
+        return result
+
+    return wrapper
+
+
+@log_call
+def greet(name):
+    return f"Hello, {name}"
+
+
+print(greet("Mary"))
+```
